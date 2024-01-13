@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -17,11 +18,9 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $table = 'users';
+    protected $primaryKey = 'id';
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -29,17 +28,21 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password'
     ];
 
+     public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
     /**
-     * The attributes that should be cast.
+     * Return a key value array, containing any custom claims to be added to the JWT.
      *
-     * @var array<string, string>
+     * @return array
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 }
