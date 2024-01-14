@@ -1,0 +1,121 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Photogood Open API Docs",
+        "description": "Photogood Open API",
+        "contact": {
+            "email": "laksamana.arya1412@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/api",
+            "description": "Photogood API Server"
+        }
+    ],
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User Login API's",
+                "operationId": "c8dfeded84a9684f296d87247d968f02",
+                "requestBody": {
+                    "description": "- Login to your account",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "Username": {
+                                        "type": "string",
+                                        "example": "ogud"
+                                    },
+                                    "Password": {
+                                        "type": "string",
+                                        "example": "1234"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully Login"
+                    },
+                    "201": {
+                        "description": "Successfully Login"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User Register API's",
+                "operationId": "60d7f88ad035d82b4cf1b070d2b11d77",
+                "requestBody": {
+                    "description": "- Register to your account",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "Username": {
+                                        "type": "string",
+                                        "example": "ogud"
+                                    },
+                                    "NamaLengkap": {
+                                        "type": "string",
+                                        "example": "ogud laksamana"
+                                    },
+                                    "Password": {
+                                        "type": "string",
+                                        "example": "1234"
+                                    },
+                                    "Email": {
+                                        "type": "string",
+                                        "example": "laksamana.arya1412@gmail.com"
+                                    },
+                                    "Alamat": {
+                                        "type": "string",
+                                        "example": "Jl sama kamu kapan?"
+                                    },
+                                    "Followers": {
+                                        "type": "integer",
+                                        "example": "0"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully Register"
+                    },
+                    "201": {
+                        "description": "Successfully Register"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        }
+    }
+}
