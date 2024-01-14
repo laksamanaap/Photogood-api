@@ -16,6 +16,40 @@ class AuthController extends Controller
     }
 
 
+       /**
+ * @OA\Get(
+ *     path="/get-all-user",
+ *     tags={"Authentication"},
+ *     summary="Get All User API's",
+ *     @OA\Response(
+ *         response=200,
+ *         description="Successfully Login",
+ *      ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Successfully Login",
+ *      ),
+ *      @OA\Response(
+ *         response=400,
+ *         description="Bad Request",
+ *      ),
+ *    )
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+    public function getAllUser(Request $request)
+    {
+
+        $user = User::all();
+
+        if (!$user) {
+            return response()->json(['error' => "There's no user found!"], 404);
+        } else {
+            return response()->json(['data' => $user]);
+        }
+
+    }
+
 
      /**
  * @OA\Post(
@@ -28,7 +62,7 @@ class AuthController extends Controller
  *          @OA\JsonContent(
  *              type="object",
  *              @OA\Property(property="Username", type="string", example="ogud"),
- *              @OA\Property(property="Password", type="string", example="1234"),
+ *              @OA\Property(property="password", type="string", example="1234"),
  *          )
  *     ),
  *     @OA\Response(
@@ -52,18 +86,20 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'Username' => 'required|string',
-            'Password' => 'required|string'
+            'password' => 'required|string'
         ]);
 
         if ($validator->fails()) {
             return response()->json([$validator->errors()], 422);
         }
 
-        if (auth()->attempt([
+        $token = auth()->attempt([
             'Username' => $request->input('Username'),
-            'Password' => $request->input('Password')
-        ])) {
-            $token = auth()->login(auth()->user());
+            'password' => $request->input('password')
+        ]);
+
+
+        if ($token) {
             return response()->json([
                 'data' => [
                     'user' => auth()->user(),
@@ -75,9 +111,8 @@ class AuthController extends Controller
                 ],
             ]);
         } else {
-            return response()->json(['error' => 'Try to check your username or password'], 401);
+            return response()->json(['error' => 'Try to check your username or password'],401);
         }
-
     }
 
 
@@ -147,7 +182,7 @@ class AuthController extends Controller
         $user = User::create([
             'Username' => $request->input('Username'),
             'NamaLengkap' => $request->input('NamaLengkap'),
-            'Password' => bcrypt($request->input('Password')),
+            'password' => bcrypt($request->input('Password')),
             'Email' => $request->input('Email'),
             'Alamat' => $request->input('Alamat'),
             'Followers' => $request->input('Followers'),

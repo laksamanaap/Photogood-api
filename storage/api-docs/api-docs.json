@@ -19,6 +19,26 @@
         }
     ],
     "paths": {
+        "/get-all-user": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Get All User API's",
+                "operationId": "c17b79cfeb99bc8b529d49b63964c409",
+                "responses": {
+                    "200": {
+                        "description": "Successfully Login"
+                    },
+                    "201": {
+                        "description": "Successfully Login"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "tags": [
@@ -37,7 +57,7 @@
                                         "type": "string",
                                         "example": "ogud"
                                     },
-                                    "Password": {
+                                    "password": {
                                         "type": "string",
                                         "example": "1234"
                                     }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('user_id');
             $table->string('Username');
             $table->string('NamaLengkap');
-            $table->string('Password');
+            $table->string('password');
             $table->string('Email');
             $table->string('Alamat');
             $table->string('Followers')->nullable();
