@@ -98,23 +98,19 @@ class AuthController extends Controller
             'password' => $request->input('password')
         ]);
 
-
         if ($token) {
             return response()->json([
-                'data' => [
-                    'user' => auth()->user(),
-                    'access_token' => [
-                        'token' => $token,
-                        'type' => 'Bearer',
-                        'expires_in' => auth()->factory()->getTTL() * 60,
-                    ],
+                'user' => auth()->user(),
+                'access_token' => [
+                    'token' => $token,
+                    'type' => 'Bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60,
                 ],
             ]);
         } else {
             return response()->json(['error' => 'Try to check your username or password'],401);
         }
     }
-
 
 
     /**
@@ -179,13 +175,17 @@ class AuthController extends Controller
             'Followers' => 'required|integer'
         ]);
 
+        // Status 0 : Not Active / suspended
+        // Status 1 : Active
+        // Status 2 : Member
         $user = User::create([
-            'Username' => $request->input('Username'),
-            'NamaLengkap' => $request->input('NamaLengkap'),
+            'username' => $request->input('Username'),
+            'nama_lengkap' => $request->input('NamaLengkap'),
             'password' => bcrypt($request->input('Password')),
-            'Email' => $request->input('Email'),
-            'Alamat' => $request->input('Alamat'),
-            'Followers' => $request->input('Followers'),
+            'email' => $request->input('Email'),
+            'alamat' => $request->input('Alamat'),
+            'status' => 1, // The Default is 1 or active
+            'followers' => $request->input('Followers'),
         ]);
 
         $token = auth()->login($user);

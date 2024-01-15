@@ -19,7 +19,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+// Auth
 Route::get('/get-all-user', [AuthController::class, 'getAllUser'])->name('getAllUser');
 Route::post('/auth/login', [AuthController::class, 'loginUsers'])->name('loginUsers');
 Route::post('/auth/register', [AuthController::class, 'registerUsers'])->name('registerUsers');
+
+// Photos
+
 
