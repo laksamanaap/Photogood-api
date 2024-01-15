@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('judul_foto');
             $table->string('deskripsi_foto');
             $table->string('lokasi_file');
+            $table->string('type_file');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('member_id');
+            $table->unsignedBigInteger('member_id')->nullable();
             $table->unsignedBigInteger('album_id');
             $table->timestamps();
 

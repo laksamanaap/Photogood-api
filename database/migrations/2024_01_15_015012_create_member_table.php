@@ -14,16 +14,8 @@ return new class extends Migration
         Schema::create('member', function (Blueprint $table) {
             $table->id('member_id');
             $table->unsignedBigInteger('user_id');
-            $table->string('username');
-            $table->string('nama_lengkap');
-            $table->string('password');
-            $table->string('email');
-            $table->string('alamat');
-            $table->string('status');
-            $table->string('followers')->nullable();
-            $table->string('foto_profil')->nullable();
             $table->timestamps();  
-
+            
             $table->foreign('user_id')->references('user_id')->on('users');
         });
     }

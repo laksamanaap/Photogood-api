@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -50,8 +51,40 @@ class AuthController extends Controller
 
     }
 
+    /**
+ * @OA\Get(
+ *     path="/get-all-member",
+ *     tags={"Authentication"},
+ *     summary="Get All Member API's",
+ *     @OA\Response(
+ *         response=200,
+ *         description="Successfully Login",
+ *      ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Successfully Login",
+ *      ),
+ *      @OA\Response(
+ *         response=400,
+ *         description="Bad Request",
+ *      ),
+ *    )
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+    public function getAllMember(Request $request)
+    {
+        $user = Member::all();
 
-     /**
+        if (!$user) {
+            return response()->json(['error' => "There's no member found!"], 404);
+        } else {
+            return response()->json(['data' => $user]);
+        }
+    }
+
+
+  /**
  * @OA\Post(
  *     path="/auth/login",
  *     tags={"Authentication"},
@@ -81,36 +114,33 @@ class AuthController extends Controller
  *
  * @return \Illuminate\Http\JsonResponse
  */
-     public function loginUsers(Request $request)
-    {
+public function loginUsers(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'Username' => 'required|string',
+        'password' => 'required|string'
+    ]);
 
-        $validator = Validator::make($request->all(), [
-            'Username' => 'required|string',
-            'password' => 'required|string'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([$validator->errors()], 422);
-        }
-
-        $token = auth()->attempt([
-            'Username' => $request->input('Username'),
-            'password' => $request->input('password')
-        ]);
-
-        if ($token) {
-            return response()->json([
-                'user' => auth()->user(),
-                'access_token' => [
-                    'token' => $token,
-                    'type' => 'Bearer',
-                    'expires_in' => auth()->factory()->getTTL() * 60,
-                ],
-            ]);
-        } else {
-            return response()->json(['error' => 'Try to check your username or password'],401);
-        }
+    if ($validator->fails()) {
+        return response()->json([$validator->errors()], 422);
     }
+
+    if ($token = auth()->attempt([
+        'Username' => $request->input('Username'),
+        'password' => $request->input('password')
+    ])) {
+        $user = auth()->user();
+        $loginToken = Hash::make($user->username);
+        $user->update(['login_tokens' => $loginToken]);
+
+        return response()->json([
+            'user' => $user,
+        ]);
+    } else {
+        return response()->json(['error' => 'Try to check your username or password'], 401);
+    }
+}
+
 
 
     /**
@@ -178,6 +208,7 @@ class AuthController extends Controller
         // Status 0 : Not Active / suspended
         // Status 1 : Active
         // Status 2 : Member
+        // Status 3 : Admin
         $user = User::create([
             'username' => $request->input('Username'),
             'nama_lengkap' => $request->input('NamaLengkap'),
@@ -192,28 +223,12 @@ class AuthController extends Controller
 
         return response()->json([
             'user' => $user,
-            'access_token' => [
-                'token' => $token,
-                'type' => 'Bearer',
-                'expires_in' => auth()->factory()->getTTL() * 60,   
-            ],
+            'token' => $token
         ]);
 
         }
        
     }
 
-    public function refresh()
-    {
-        return $this->respondWithToken(auth()->refresh());
-    }
-
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
-    }
+    
 }

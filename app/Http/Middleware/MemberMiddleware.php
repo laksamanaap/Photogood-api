@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class MemberMiddleware
@@ -15,6 +17,12 @@ class MemberMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // $user = Auth::user();
+
+        // if ($user->status === 2) {
+        // }
+        
+        // return response()->json(['message' => 'Unauthorized member'], 401);
         return $next($request);
     }
 }

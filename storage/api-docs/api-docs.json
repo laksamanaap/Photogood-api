@@ -39,6 +39,26 @@
                 }
             }
         },
+        "/get-all-member": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Get All Member API's",
+                "operationId": "bd78ab6185f23d5a7a7ec2e365180f86",
+                "responses": {
+                    "200": {
+                        "description": "Successfully Login"
+                    },
+                    "201": {
+                        "description": "Successfully Login"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "tags": [
