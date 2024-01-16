@@ -24,8 +24,6 @@ class UserMiddleware
         }
 
         $user = User::where('login_tokens', $token)->first();
-        return response()->json($user,200);
-
         if (!$user) {
             return response()->json(['message' => 'Unauthorized user not found'], 401);
         }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('komentar_id');
             $table->unsignedBigInteger('foto_id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('member_id');
+            $table->unsignedBigInteger('member_id')->nullable();
             $table->string('isi_komentar');
             $table->timestamps();
 

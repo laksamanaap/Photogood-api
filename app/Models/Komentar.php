@@ -12,5 +12,10 @@ class Komentar extends Model
     protected $primaryKey = 'komentar_id';
     protected $guarded = [];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     use HasFactory;
 }

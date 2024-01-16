@@ -130,7 +130,7 @@ class PhotoGuestController extends Controller
     public function getPhotoDetail(Request $request, $fotoID)
     {
 
-        $foto = Foto::with('album','user', 'member.user')->find($fotoID);
+        $foto = Foto::with('album','user', 'member.user','comment.user')->find($fotoID);
 
         if (!$foto) {
             return response()->json(['message' => "Cannot find data foto_id $fotoID"]);
@@ -140,6 +140,17 @@ class PhotoGuestController extends Controller
 
     }
 
+
+    public function showAllPhoto(Request $request)
+    {
+        $foto = Foto::all();
+
+        if (!$foto) {
+            return response()->json(['message' => 'Not photo found!']);
+        }
+
+        return response()->json($foto, 200);
+    }
 
 
 }

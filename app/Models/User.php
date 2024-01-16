@@ -23,7 +23,11 @@ class User extends Authenticatable implements JWTSubject
     protected $primaryKey = 'user_id';
     protected $guarded = [];
 
-  
+    public function member()
+    {
+        return $this->belongsTo(Member::class, 'user_id');
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

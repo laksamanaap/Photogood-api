@@ -130,17 +130,16 @@ public function loginUsers(Request $request)
         'password' => $request->input('password')
     ])) {
         $user = auth()->user();
+        
         $loginToken = Hash::make($user->username);
         $user->update(['login_tokens' => $loginToken]);
+        $userWithMember = User::with('member')->find($user->user_id);
 
-        return response()->json([
-            'user' => $user,
-        ]);
+        return response()->json($userWithMember,200);
     } else {
         return response()->json(['error' => 'Try to check your username or password'], 401);
     }
 }
-
 
 
     /**
@@ -203,7 +202,8 @@ public function loginUsers(Request $request)
             'Email' => 'required|string',
             'Alamat' => 'required|string',
             'Followers' => 'required|integer'
-        ]);
+        ]
+    );
 
         // Status 0 : Not Active / suspended
         // Status 1 : Active

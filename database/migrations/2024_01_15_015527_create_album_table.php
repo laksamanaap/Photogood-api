@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('album_foto', function (Blueprint $table) {
             $table->id('album_id');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('member_id')->nullable();
             $table->string('nama_album');
-            $table->string('deskrispsi_album');
+            $table->string('deskripsi_album');
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('users');
+            $table->foreign('member_id')->references('member_id')->on('member');
         });
     }
 

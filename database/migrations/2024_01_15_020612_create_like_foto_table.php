@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('like_foto', function (Blueprint $table) {
             $table->id('like_id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('member_id');
+            $table->unsignedBigInteger('member_id')->nullable();
             $table->unsignedBigInteger('foto_id');
             $table->timestamps();
 
