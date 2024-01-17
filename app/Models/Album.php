@@ -12,5 +12,10 @@ class Album extends Model
     protected $primaryKey = 'album_id';
     protected $guarded = [];
 
+    public function fotos()
+    {
+        return $this->hasMany(Foto::class, 'album_id');
+    }
+
     use HasFactory;
 }

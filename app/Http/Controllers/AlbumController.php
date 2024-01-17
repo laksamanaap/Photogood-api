@@ -108,4 +108,21 @@ class AlbumController extends Controller
 
     }
 
+    public function showDetailMemberAlbum(Request $request, $albumID)
+    {
+        $token = $request->input('token');
+        $user = User::where("login_tokens", $token)->first();
+        $userID = $user->user_id;
+
+        $album = Album::with('fotos')->find($albumID);
+
+        if (!$album) {
+            return response()->json(['message' => 'Album not found!']);
+        }
+
+        return response()->json($album,200);
+    }
+
+  
+
 }

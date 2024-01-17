@@ -33,7 +33,7 @@ class PhotoGuestController extends Controller
         $userImageCount = Foto::where('user_id', $request->input('user_id'))->count();
 
         if ($userImageCount >= 2) {
-            return response()->json(['message' => 'User can only store 2 images only. Subscribe to unlimited photo store!'], 404);
+            return response()->json(['message' => 'User can only store 2 images only. Subscribe to unlimited photo store!'], 401);
         } 
 
         $imageModel = Foto::create([

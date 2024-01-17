@@ -8,7 +8,9 @@ use App\Http\Controllers\LikeController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\AlbumController;
 use App\Http\Middleware\MemberMiddleware;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\PhotoGuestController;
 
@@ -36,17 +38,13 @@ Route::post('/auth/member', [AuthController::class, 'addMember'])->name('addMemb
 Route::get('/get-photo/{foto_id}', [PhotoGuestController::class, 'getPhotoDetail'])->name('getPhotoDetail');
 Route::get('/get-all-photo', [PhotoGuestController::class, 'showAllPhoto'])->name('showAllPhoto');
 
+Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
 
 Route::middleware(UserMiddleware::class)->group(
     function(){
 
         // Subscribe - Ongoing - Hardest
-                
-        // Bookmark - ok
         
-        // Search - ok
-        Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
-
         // Download Photo - ok
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
 
@@ -62,10 +60,10 @@ Route::middleware(UserMiddleware::class)->group(
         // Comment - ok
         Route::get('v1/show-photo-comment', [CommentController::class, 'showComment'])->name('showComment');
         Route::post('v1/store-guest-comment', [CommentController::class, 'guestStoreComment'])->name('guestStoreComment');
-        Route::post('v1/update-guest-comment', [CommentController::class, 'guestUpdateComment'])->name('guestUpdateComment');
         Route::delete('v1/delete-guest-comment', [CommentController::class, 'guestDeleteComment'])->name('guestDeleteComment');
+        Route::post('v1/update-guest-comment', [CommentController::class, 'guestUpdateComment'])->name('guestUpdateComment');
 
-        // Photos - ongoing validation
+        // Photos - Ongoing validation
         Route::post('v1/store-guest-photo', [PhotoGuestController::class, 'guestStorePhoto'])->name('guestStorePhoto');
         Route::post('v1/update-guest-photo', [PhotoGuestController::class, 'guestUpdatePhoto'])->name('guestUpdatePhoto');
         Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');
@@ -74,13 +72,19 @@ Route::middleware(UserMiddleware::class)->group(
 );
 
 Route::middleware(MemberMiddleware::class)->group(
-    function(){
+    function() {
         // Album - ok
-        Route::get('v2/show-member-album', [AlbumController::class, 'showMemberAlbum'] )->name('showMemberAlbum');
-        Route::post('v2/store-member-album', [AlbumController::class, 'memberStoreAlbum'])->name('memberStoreAlbum');
-        Route::post('v2/update-member-album', [AlbumController::class, 'memberUpdateAlbum'])->name('memberUpdateAlbum');
-        Route::delete('v2/delete-member-album', [AlbumController::class, 'memberDeleteAlbum'])->name('memberDeleteAlbum');
+        Route::get('v2/show-album', [AlbumController::class, 'showMemberAlbum'] )->name('showMemberAlbum');
+        Route::get('v2/show-detail-album/{album_id}', [AlbumController::class, 'showDetailMemberAlbum'] )->name('showDetailMemberAlbum');
+        Route::post('v2/store-album', [AlbumController::class, 'memberStoreAlbum'])->name('memberStoreAlbum');
+        Route::post('v2/update-album', [AlbumController::class, 'memberUpdateAlbum'])->name('memberUpdateAlbum');
+        Route::delete('v2/delete-album', [AlbumController::class, 'memberDeleteAlbum'])->name('memberDeleteAlbum');
 
+        // Bookmark - ongoing
+        Route::get('v2/show-bookmark/{bookmark_id}', [BookmarkController::class, 'showBookmark'])->name('showBookmark');
+        Route::post('v2/store-bookmark', [BookmarkController::class, 'storeBookmark'])->name('storeBookmark');
+        Route::delete('v2/delete-bookmark', [BookmarkController::class, 'deleteBookmark'])->name('deleteBookmark');
+        
         // Photos (Unlimited) - Ongoing
 
     }
