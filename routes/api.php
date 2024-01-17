@@ -9,6 +9,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\AlbumController;
 use App\Http\Middleware\MemberMiddleware;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\PhotoGuestController;
 
 /*
@@ -30,6 +31,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Auth
 Route::post('/auth/login', [AuthController::class, 'loginUsers'])->name('loginUsers');
 Route::post('/auth/register', [AuthController::class, 'registerUsers'])->name('registerUsers');
+Route::post('/auth/member', [AuthController::class, 'addMember'])->name('addMember');
+
 Route::get('/get-photo/{foto_id}', [PhotoGuestController::class, 'getPhotoDetail'])->name('getPhotoDetail');
 Route::get('/get-all-photo', [PhotoGuestController::class, 'showAllPhoto'])->name('showAllPhoto');
 
@@ -38,14 +41,15 @@ Route::middleware(UserMiddleware::class)->group(
     function(){
 
         // Subscribe - Ongoing - Hardest
+                
+        // Bookmark - ok
         
-        // Bookmark - Ongoing
+        // Search - ok
+        Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
 
-        // Download Photo - Ongoing
+        // Download Photo - ok
+        Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
 
-        // Search - Ongoing
-        Route::get('search-photo', [SearchController::class, 'searchFoto'])->name('searchFoto');
-        
         // Update User Profile - ok
         Route::get('v1/show-user-detail/{user_id}', [AuthController::class, 'showUserDetail'])->name('showUserDetail');
         Route::post('v1/update-user-detail/{user_id}', [AuthController::class, 'updateUserDetail'])->name('updateUserDetail');

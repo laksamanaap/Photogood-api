@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Album;
 use App\Models\Member;
+use App\Models\Download;
 use App\Models\Komentar;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,6 +35,16 @@ class Foto extends Model
     public function comment()
     {
         return $this->hasMany(Komentar::class, 'foto_id');
+    }
+
+    public function download()
+    {
+        return $this->hasMany(Download::class, 'foto_id');
+    }
+
+    public function like()
+    {
+        return $this->hasMany(Like::class, 'foto_id');
     }
 
     use HasFactory;

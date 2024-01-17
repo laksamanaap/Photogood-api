@@ -302,5 +302,10 @@ public function loginUsers(Request $request)
 
     }
 
+    public function addMember(Request $request)
+    {
+        
+    }
+
     
 }
