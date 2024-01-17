@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -228,6 +229,77 @@ public function loginUsers(Request $request)
 
         }
        
+    }
+
+
+    public function showUserDetail(Request $request, $userID)
+    {
+        $user = User::with('member')->find($userID);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found!']);
+        }
+
+        return response()->json($user,200);
+    }
+
+    public function updateUserDetail(Request $request, $userID)
+    {
+
+         $validator = Validator::make($request->all(), [
+            'username' => 'required|string',
+            'nama_lengkap' => 'required|string',
+            'email' => 'required|string',
+            'alamat' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()],422);
+        }
+
+        $user = User::with('member')->find($userID);
+
+        if (!$user) {
+            return response()->json(['message' => "There's no user found"]);
+        }
+
+        $user->username = $request->input('username');
+        $user->nama_lengkap = $request->input('nama_lengkap');
+        $user->email = $request->input('email');
+        $user->alamat = $request->input('alamat');
+        $user->save();
+
+        return response()->json([
+            'message' => "Successfully updated user with id $userID",
+            'data' => $user
+        ]);
+
+    }
+
+    public function storeUserPhoto(Request $request, $userID)
+    {
+
+         $validator = Validator::make($request->all(), [
+            'images.*' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()],422);
+        }
+
+        $uploadFolders = 'foto_user';
+        $image = $request->file('images');
+        $imagePath = $image->store($uploadFolders, 'public');
+
+        $user = User::with('member')->find($userID);
+        $user->foto_profil = Storage::disk('public')->url($imagePath); 
+        $user->save();
+
+        return response()->json([
+            'message' => 'Image uploaded successfully',
+            'data' => $user
+        ]);
+
     }
 
     

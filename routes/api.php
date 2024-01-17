@@ -37,16 +37,19 @@ Route::get('/get-all-photo', [PhotoGuestController::class, 'showAllPhoto'])->nam
 Route::middleware(UserMiddleware::class)->group(
     function(){
 
+        // Subscribe - Ongoing - Hardest
+        
         // Bookmark - Ongoing
 
         // Download Photo - Ongoing
 
-        // Update User Profile - Ongoing
-
-        // Subscribe - Ongoing - Hardest
-
         // Search - Ongoing
         Route::get('search-photo', [SearchController::class, 'searchFoto'])->name('searchFoto');
+        
+        // Update User Profile - ok
+        Route::get('v1/show-user-detail/{user_id}', [AuthController::class, 'showUserDetail'])->name('showUserDetail');
+        Route::post('v1/update-user-detail/{user_id}', [AuthController::class, 'updateUserDetail'])->name('updateUserDetail');
+        Route::post('v1/store-user-photo/{user_id}', [AuthController::class, 'storeUserPhoto'])->name('storeUserPhoto');
 
         // Like - ok
         Route::post('v1/store-guest-like', [LikeController::class, 'guestStoreLike'])->name('guestStoreLike');
@@ -62,7 +65,6 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/store-guest-photo', [PhotoGuestController::class, 'guestStorePhoto'])->name('guestStorePhoto');
         Route::post('v1/update-guest-photo', [PhotoGuestController::class, 'guestUpdatePhoto'])->name('guestUpdatePhoto');
         Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');
-
 
     }
 );
