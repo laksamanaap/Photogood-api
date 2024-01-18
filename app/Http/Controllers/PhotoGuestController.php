@@ -16,7 +16,6 @@ class PhotoGuestController extends Controller
             'judul_foto' => 'required|string',
             'deskripsi_foto' => 'required|string',
             'user_id' => 'required|string',
-            'album_id' => 'required|string',
             'images.*' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
@@ -33,7 +32,7 @@ class PhotoGuestController extends Controller
         $userImageCount = Foto::where('user_id', $request->input('user_id'))->count();
 
         if ($userImageCount >= 2) {
-            return response()->json(['message' => 'User can only store 2 images only. Subscribe to unlimited photo store!'], 401);
+            return response()->json(['message' => 'User can only store 2 images only. Subscribe to unlimited photo store!'], 404);
         } 
 
         $imageModel = Foto::create([
@@ -42,6 +41,7 @@ class PhotoGuestController extends Controller
             'user_id' => $request->input("user_id"),
             'member_id' => $request->input("member_id"),
             'album_id' => $request->input("album_id"),
+            'status' => 0, // Default, waiting for admin accepted
             'type_file' => $image->getClientMimeType(),
             'lokasi_file' => Storage::disk('public')->url($imagePath),
         ]);
@@ -72,15 +72,12 @@ class PhotoGuestController extends Controller
             return response()->json(['error' => 'Image not found'], 404);
         }
 
-        // Delete the existing image file
         Storage::disk('public')->delete($existingImage->lokasi_file);
 
-        // Upload the new image file
         $uploadFolders = 'campus';
         $newImage = $request->file('images');
         $newImagePath = $newImage->store($uploadFolders, 'public');
 
-        // Update the image data in the database
         $existingImage->update([
             'lokasi_file' => Storage::disk('public')->url($newImagePath),
         ]);
@@ -143,7 +140,7 @@ class PhotoGuestController extends Controller
 
     public function showAllPhoto(Request $request)
     {
-        $foto = Foto::all();
+        $foto = Foto::where('status',1)->get();
 
         if (!$foto) {
             return response()->json(['message' => 'Not photo found!']);

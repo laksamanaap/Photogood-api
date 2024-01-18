@@ -114,7 +114,7 @@ class AlbumController extends Controller
         $user = User::where("login_tokens", $token)->first();
         $userID = $user->user_id;
 
-        $album = Album::with('fotos')->find($albumID);
+        $album = Album::with('bookmark_fotos.foto')->find($albumID);
 
         if (!$album) {
             return response()->json(['message' => 'Album not found!']);

@@ -158,7 +158,6 @@ public function loginUsers(Request $request)
  *              @OA\Property(property="Password", type="string", example="1234"),
  *              @OA\Property(property="Email", type="string", example="laksamana.arya1412@gmail.com"),
  *              @OA\Property(property="Alamat", type="string", example="Jl sama kamu kapan?"),
- *              @OA\Property(property="Followers", type="integer", example="0"),
  *          )
  *     ),
  *     @OA\Response(
@@ -186,7 +185,6 @@ public function loginUsers(Request $request)
             'Password' => 'required|string',
             'Email' => 'required|string',
             'Alamat' => 'required|string',
-            'Followers' => 'required|integer'
         ]);
 
         if ($validator->fails()) {
@@ -202,7 +200,6 @@ public function loginUsers(Request $request)
             'Password' => 'required|string',
             'Email' => 'required|string',
             'Alamat' => 'required|string',
-            'Followers' => 'required|integer'
         ]
     );
 
@@ -217,7 +214,6 @@ public function loginUsers(Request $request)
             'email' => $request->input('Email'),
             'alamat' => $request->input('Alamat'),
             'status' => 1, // The Default is 1 or active
-            'followers' => $request->input('Followers'),
         ]);
 
         $token = auth()->login($user);

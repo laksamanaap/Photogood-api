@@ -6,6 +6,7 @@ use App\Http\Middleware\UserMiddleware;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LikeController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Middleware\MemberMiddleware;
 use App\Http\Controllers\SearchController;
@@ -45,7 +46,7 @@ Route::middleware(UserMiddleware::class)->group(
 
         // Subscribe - Ongoing - Hardest
         
-        // Download Photo - ok
+        // Download Photo - ongoing
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
 
         // Update User Profile - ok
@@ -63,7 +64,7 @@ Route::middleware(UserMiddleware::class)->group(
         Route::delete('v1/delete-guest-comment', [CommentController::class, 'guestDeleteComment'])->name('guestDeleteComment');
         Route::post('v1/update-guest-comment', [CommentController::class, 'guestUpdateComment'])->name('guestUpdateComment');
 
-        // Photos - Ongoing validation
+        // Photos - ok
         Route::post('v1/store-guest-photo', [PhotoGuestController::class, 'guestStorePhoto'])->name('guestStorePhoto');
         Route::post('v1/update-guest-photo', [PhotoGuestController::class, 'guestUpdatePhoto'])->name('guestUpdatePhoto');
         Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');
@@ -86,13 +87,18 @@ Route::middleware(MemberMiddleware::class)->group(
         Route::delete('v2/delete-bookmark', [BookmarkController::class, 'deleteBookmark'])->name('deleteBookmark');
         
         // Photos (Unlimited) - Ongoing
-
+        
     }
 );
 
 Route::middleware(AdminMiddleware::class)->group(
     function(){
-        Route::get('/get-all-user', [AuthController::class, 'getAllUser'])->name('getAllUser');
-        Route::get('/get-all-member', [AuthController::class, 'getAllMember'])->name('getAllMember');
+        Route::get('v3/get-all-user', [AuthController::class, 'getAllUser'])->name('getAllUser');
+        Route::get('v3/get-all-member', [AuthController::class, 'getAllMember'])->name('getAllMember');
+
+        // Update photos validation - ongoing
+        Route::post('v3/update-photo-active', [AdminController::class, 'changePhotoActive'])->name('changePhotoActive');
+        Route::post('v3/update-photo-deactive', [AdminController::class, 'changePhotoDeactive'])->name('changePhotoDeactive');
+        
     }
 );

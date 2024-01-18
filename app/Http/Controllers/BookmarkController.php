@@ -23,6 +23,16 @@ class BookmarkController extends Controller
             return response()->json([$validator->errors()]);
         }
 
+        $token = $request->input('token');
+        $user = User::where('login_tokens', $token)->first();
+        $userID = $user->user_id;
+
+        $bookmarkHistory = Bookmark::where('user_id', $userID)->count();
+
+        if ($bookmarkHistory >= 1) {
+            return response()->json(['message' => 'This photo has been on your bookmark!'], 404);
+        }
+
         $bookmark = Bookmark::create([
             'foto_id' => $request->input('foto_id'),
             'album_id' => $request->input('album_id'),

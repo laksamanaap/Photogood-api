@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('email');
             $table->string('alamat');
             $table->string('status');
-            $table->string('followers')->nullable();
             $table->string('foto_profil')->nullable();
             $table->string('login_tokens')->nullable();
             $table->timestamps();            

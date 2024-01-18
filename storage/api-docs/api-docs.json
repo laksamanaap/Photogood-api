@@ -133,10 +133,6 @@
                                     "Alamat": {
                                         "type": "string",
                                         "example": "Jl sama kamu kapan?"
-                                    },
-                                    "Followers": {
-                                        "type": "integer",
-                                        "example": "0"
                                     }
                                 },
                                 "type": "object"

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Bookmark;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Album extends Model
 {
@@ -12,9 +13,9 @@ class Album extends Model
     protected $primaryKey = 'album_id';
     protected $guarded = [];
 
-    public function fotos()
+    public function bookmark_fotos()
     {
-        return $this->hasMany(Foto::class, 'album_id');
+        return $this->hasMany(Bookmark::class, 'album_id');
     }
 
     use HasFactory;

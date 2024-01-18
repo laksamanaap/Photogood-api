@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('nama_album');
             $table->string('deskripsi_album');
             $table->timestamps();
-
+            
             $table->foreign('user_id')->references('user_id')->on('users');
             $table->foreign('member_id')->references('member_id')->on('member');
         });
