@@ -128,7 +128,7 @@ class PhotoGuestController extends Controller
     public function getPhotoDetail(Request $request, $fotoID)
     {
 
-        $foto = Foto::with('album','user', 'member.user','comment.user','download','like')->find($fotoID);
+        $foto = Foto::with('user', 'member.user','comment.user','download','like', 'kategori')->find($fotoID);
 
         if (!$foto) {
             return response()->json(['message' => "Cannot find data foto_id $fotoID"]);

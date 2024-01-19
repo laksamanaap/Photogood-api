@@ -87,7 +87,7 @@ Route::middleware(MemberMiddleware::class)->group(
         Route::post('v2/store-bookmark', [BookmarkController::class, 'storeBookmark'])->name('storeBookmark');
         Route::delete('v2/delete-bookmark', [BookmarkController::class, 'deleteBookmark'])->name('deleteBookmark');
         
-        // Photos (Unlimited) - Ongoing
+        // Photos - ok
         Route::post('v2/store-member-photo', [PhotoMemberController::class, 'memberStorePhoto'])->name('memberStorePhoto');
         Route::post('v2/update-member-photo', [PhotoMemberController::class, 'memberUpdatePhoto'])->name('memberUpdatePhoto');
         Route::delete('v2/delete-member-photo', [PhotoMemberController::class, 'memberDeletePhoto'])->name('memberDeletePhoto');

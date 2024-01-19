@@ -55,6 +55,24 @@ class BookmarkController extends Controller
 
         
         return response()->json($bookmark);
+    }
+
+    public function deleteBookmark(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'bookmark_id' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()]);
+        }
+
+        $bookmarkID = $request->input('bookmark_id');
+        $bookmark = Bookmark::destroy($bookmarkID);
+
+        return response()->json(['message' => 'Bookmark was deleted succesfully']);
+
 
     }
 

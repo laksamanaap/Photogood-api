@@ -15,6 +15,8 @@ class PhotoMemberController extends Controller
             'judul_foto' => 'required|string',
             'deskripsi_foto' => 'required|string',
             'user_id' => 'required|string',
+            'member_id' => 'required|string',
+            'kategori_id' => 'required|string',
             'images.*' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
@@ -33,7 +35,7 @@ class PhotoMemberController extends Controller
             'deskripsi_foto' => $request->input("deskripsi_foto"),
             'user_id' => $request->input("user_id"),
             'member_id' => $request->input("member_id"),
-            'album_id' => $request->input("album_id"),
+            'kategori_id' => $request->input("kategori_id"),
             'status' => 0, // Default, waiting for admin accepted
             'type_file' => $image->getClientMimeType(),
             'lokasi_file' => Storage::disk('public')->url($imagePath),

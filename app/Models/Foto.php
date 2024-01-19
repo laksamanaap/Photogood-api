@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Album;
 use App\Models\Member;
 use App\Models\Download;
+use App\Models\Kategori;
 use App\Models\Komentar;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,6 +46,11 @@ class Foto extends Model
     public function like()
     {
         return $this->hasMany(Like::class, 'foto_id');
+    }
+
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'kategori_id');
     }
 
     use HasFactory;
