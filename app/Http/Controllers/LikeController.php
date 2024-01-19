@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Foto;
 use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,7 +14,6 @@ class LikeController extends Controller
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|string',
-            'member_id' => 'required|string',
             'foto_id' => 'required|string',
         ]);
 
@@ -49,6 +49,17 @@ class LikeController extends Controller
         }
 
         return response()->json(['message' => "Succesfully delete like id $likeID"]);
+    }
+
+    public function showPhotoLike(Request $request, $fotoID)
+    {
+        $foto = Foto::with('like')->find($fotoID);
+
+        if (!$foto) {
+            return response()->json(['message' => 'Photo not found']);
+        }
+
+        return response($foto,200);
 
     }
 }

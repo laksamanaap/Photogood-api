@@ -14,6 +14,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\PhotoGuestController;
+use App\Http\Controllers\PhotoMemberController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +30,6 @@ use App\Http\Controllers\PhotoGuestController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
 
 // Auth
 Route::post('/auth/login', [AuthController::class, 'loginUsers'])->name('loginUsers');
@@ -55,6 +55,7 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/store-user-photo/{user_id}', [AuthController::class, 'storeUserPhoto'])->name('storeUserPhoto');
 
         // Like - ok
+        Route::get('v1/show-photo-like/{foto_id}', [LikeController::class, 'showPhotoLike'])->name('showPhotoLike');
         Route::post('v1/store-guest-like', [LikeController::class, 'guestStoreLike'])->name('guestStoreLike');
         Route::delete('v1/delete-guest-like', [LikeController::class, 'guestDeleteLike'])->name('guestDeleteLike');
 
@@ -81,13 +82,15 @@ Route::middleware(MemberMiddleware::class)->group(
         Route::post('v2/update-album', [AlbumController::class, 'memberUpdateAlbum'])->name('memberUpdateAlbum');
         Route::delete('v2/delete-album', [AlbumController::class, 'memberDeleteAlbum'])->name('memberDeleteAlbum');
 
-        // Bookmark - ongoing
+        // Bookmark - ok
         Route::get('v2/show-bookmark/{bookmark_id}', [BookmarkController::class, 'showBookmark'])->name('showBookmark');
         Route::post('v2/store-bookmark', [BookmarkController::class, 'storeBookmark'])->name('storeBookmark');
         Route::delete('v2/delete-bookmark', [BookmarkController::class, 'deleteBookmark'])->name('deleteBookmark');
         
         // Photos (Unlimited) - Ongoing
-        
+        Route::post('v2/store-member-photo', [PhotoMemberController::class, 'memberStorePhoto'])->name('memberStorePhoto');
+        Route::post('v2/update-member-photo', [PhotoMemberController::class, 'memberUpdatePhoto'])->name('memberUpdatePhoto');
+        Route::delete('v2/delete-member-photo', [PhotoMemberController::class, 'memberDeletePhoto'])->name('memberDeletePhoto');
     }
 );
 
