@@ -93,21 +93,15 @@ class CommentController extends Controller
 
     }
 
-    public function showComment(Request $request) 
+    public function showComment(Request $request, $fotoID) 
     {
-        $validator = Validator::make($request->all(), [
-            'foto_id' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([$validator->errors()],422);
+        $comment = Foto::with('comment.user')->find($fotoID);
+        
+        if (!$comment) {
+            return response()->json(['message' => 'foto_id not found']);
         }
 
-        $fotoID = $request->input("foto_id");
-
-        $comment = Foto::with('comment.user')->find($fotoID);
-
-        return response()->json($comment);
+        return response()->json($comment, 200);
 
     }
 

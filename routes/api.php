@@ -60,7 +60,7 @@ Route::middleware(UserMiddleware::class)->group(
         Route::delete('v1/delete-guest-like', [LikeController::class, 'guestDeleteLike'])->name('guestDeleteLike');
 
         // Comment - ok
-        Route::get('v1/show-photo-comment', [CommentController::class, 'showComment'])->name('showComment');
+        Route::get('v1/show-photo-comment/{foto_id}', [CommentController::class, 'showComment'])->name('showComment');
         Route::post('v1/store-guest-comment', [CommentController::class, 'guestStoreComment'])->name('guestStoreComment');
         Route::delete('v1/delete-guest-comment', [CommentController::class, 'guestDeleteComment'])->name('guestDeleteComment');
         Route::post('v1/update-guest-comment', [CommentController::class, 'guestUpdateComment'])->name('guestUpdateComment');
@@ -96,6 +96,7 @@ Route::middleware(MemberMiddleware::class)->group(
 
 Route::middleware(AdminMiddleware::class)->group(
     function(){
+        // Ok
         Route::get('v3/get-all-user', [AuthController::class, 'getAllUser'])->name('getAllUser');
         Route::get('v3/get-all-member', [AuthController::class, 'getAllMember'])->name('getAllMember');
 
