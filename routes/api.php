@@ -97,10 +97,10 @@ Route::middleware(MemberMiddleware::class)->group(
 Route::middleware(AdminMiddleware::class)->group(
     function(){
         // Ok
-        Route::get('v3/get-all-user', [AuthController::class, 'getAllUser'])->name('getAllUser');
-        Route::get('v3/get-all-member', [AuthController::class, 'getAllMember'])->name('getAllMember');
+        Route::get('v3/get-all-user', [AdminController::class, 'getAllUser'])->name('getAllUser');
+        Route::get('v3/get-all-member', [AdminController::class, 'getAllMember'])->name('getAllMember');
 
-        // Update photos validation - ongoing
+        // Ok
         Route::post('v3/update-photo-active', [AdminController::class, 'changePhotoActive'])->name('changePhotoActive');
         Route::post('v3/update-photo-deactive', [AdminController::class, 'changePhotoDeactive'])->name('changePhotoDeactive');
         
