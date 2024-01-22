@@ -36,6 +36,8 @@ class PhotoGuestController extends Controller
             return response()->json(['message' => 'User can only store 2 images only. Subscribe to unlimited photo store!'], 404);
         } 
 
+        $base64Image = base64_encode(file_get_contents(storage_path("app/public/{$imagePath}")));
+
         $imageModel = Foto::create([
             'judul_foto' => $request->input("judul_foto"),
             'deskripsi_foto' => $request->input("deskripsi_foto"),
@@ -44,7 +46,7 @@ class PhotoGuestController extends Controller
             'kategori_id' => $request->input("kategori_id"),
             'status' => 0, // Default, waiting for admin accepted
             'type_file' => $image->getClientMimeType(),
-            'lokasi_file' => Storage::disk('public')->url($imagePath),
+            'lokasi_file' => $base64Image,
         ]);
 
         return response()->json([
@@ -127,15 +129,18 @@ class PhotoGuestController extends Controller
 
     public function getPhotoDetail(Request $request, $fotoID)
     {
-
         $foto = Foto::with('user', 'member.user','comment.user','download','like', 'kategori')->find($fotoID);
 
         if (!$foto) {
             return response()->json(['message' => "Cannot find data foto_id $fotoID"]);
         }
 
-        return response()->json($foto,200);
+        $imageData = base64_decode($foto->lokasi_file);
 
+        // return response($imageData, 200)
+        //     ->header('Content-Type', $foto->type_file); 
+
+        return response()->json($foto,200);
     }
 
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('foto_id');
             $table->string('judul_foto');
             $table->string('deskripsi_foto');
-            $table->string('lokasi_file');
+            $table->longText('lokasi_file');
             $table->string('type_file');
             $table->integer('status');
             $table->unsignedBigInteger('user_id');
