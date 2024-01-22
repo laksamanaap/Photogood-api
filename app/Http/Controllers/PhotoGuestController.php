@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Foto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class PhotoGuestController extends Controller
@@ -137,10 +138,29 @@ class PhotoGuestController extends Controller
 
         $imageData = base64_decode($foto->lokasi_file);
 
-        // return response($imageData, 200)
-        //     ->header('Content-Type', $foto->type_file); 
+        return response($foto, 200);
 
-        return response()->json($foto,200);
+    }
+
+    public function getPhotoImage(Request $request, $fotoID)
+    {
+       $foto = Foto::find($fotoID);
+
+        if (!$foto) {
+            return response()->json(['message' => "Cannot find data foto_id $fotoID"]);
+        }
+
+        $imageData = base64_decode($foto->lokasi_file);
+
+        $randomFilename = uniqid('photogood_') . '.' . pathinfo($foto->type_file, PATHINFO_EXTENSION);
+
+        $headers = [
+            'Content-Type' => $foto->type_file,
+            'Content-Disposition' => 'attachment; filename="' . $randomFilename . '"',
+        ];
+
+        return response($imageData, 200)->withHeaders($headers);
+
     }
 
 

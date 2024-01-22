@@ -37,6 +37,8 @@ Route::post('/auth/register', [AuthController::class, 'registerUsers'])->name('r
 Route::post('/auth/member', [AuthController::class, 'addMember'])->name('addMember');
 
 Route::get('/get-photo/{foto_id}', [PhotoGuestController::class, 'getPhotoDetail'])->name('getPhotoDetail');
+Route::get('/get-photo-image/{foto_id}', [PhotoGuestController::class, 'getPhotoImage'])->name('getPhotoImage');
+
 Route::get('/get-all-photo', [PhotoGuestController::class, 'showAllPhoto'])->name('showAllPhoto');
 
 Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
@@ -46,7 +48,7 @@ Route::middleware(UserMiddleware::class)->group(
 
         // Subscribe - Ongoing - Hardest
         
-        // Download Photo - ongoing
+        // Download Photo - Ongoing - Medium
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
 
         // Update User Profile - ok
@@ -65,7 +67,7 @@ Route::middleware(UserMiddleware::class)->group(
         Route::delete('v1/delete-guest-comment', [CommentController::class, 'guestDeleteComment'])->name('guestDeleteComment');
         Route::post('v1/update-guest-comment', [CommentController::class, 'guestUpdateComment'])->name('guestUpdateComment');
 
-        // Photos - ok
+        // Photos - ok (Encrypted but still bug)
         Route::post('v1/store-guest-photo', [PhotoGuestController::class, 'guestStorePhoto'])->name('guestStorePhoto');
         Route::post('v1/update-guest-photo', [PhotoGuestController::class, 'guestUpdatePhoto'])->name('guestUpdatePhoto');
         Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');
