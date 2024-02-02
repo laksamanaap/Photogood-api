@@ -28,14 +28,110 @@ class CommentController extends Controller
             return response()->json([$validator->errors()],422);
         }
 
+        $isi_komentar = $request->input('isi_komentar');
+        $isi_komentar_bersih = $this->badwordFilter($isi_komentar);
+
         $comment = Komentar::create([
             'foto_id' => $request->input('foto_id'),
             'user_id' => $request->input('user_id'),
             'member_id' => $request->input('member_id'),
-            'isi_komentar' => $request->input('isi_komentar')
+            'isi_komentar' => $isi_komentar_bersih
         ]);
 
         return response()->json($comment,200);
+    }
+
+    // Filter Comment
+   private function badwordFilter($komentar)
+    {
+   
+        $badWord = [
+        'anjingg',
+        'babi',
+        'setan',
+        'jancok',
+        'asu',
+        'ngent',
+        'ngentot',
+        'ngentit',
+        'anjir',
+        'dancok',
+        'kerek',
+        'jancuk',
+        'ndhasmu',
+        'picek',
+        'goblok',
+        'gobloq',
+        'goblog',
+        'jangkrik',
+        'damput',
+        'jamput',
+        'nggateli',
+        'anying',
+        'podol',
+        'koplok',
+        'kehed',
+        'eusleum',
+        'bagoy',
+        'ontohod',
+        'tai',
+        'tailaso',
+        'telaso',
+        'telasota',
+        'lacu',
+        'bokep',
+        'tolor',
+        'sundal',
+        'keparat',
+        'kalera',
+        'kampret',
+        'poyok',
+        'bangsat',
+        'bastard',
+        'fuck',
+        'ashole',
+        'boobs',
+        'ass',
+        'jurig',
+        'pantek',
+        'jiamput',
+        'fucking',
+        'damn',
+        'bitch',
+        'shit',
+        'shibal',
+        'wtf',
+        'wth',
+        'taek',
+        'meki',
+        'jiangkrek',
+        'buangsat',
+        'eek',
+        'eeq',
+        'eeg',
+        'fucek',
+        'bajingan',
+        'anjing'
+    ];        
+
+        $commentWord = explode(' ', $komentar);
+        
+        // Filter Badword To Star
+        $cleanWord = array_map(function ($word) use ($badWord) {
+            if (in_array(strtolower($word), $badWord)) {
+                $word = str_repeat('*', strlen($word));
+            }
+            return $word;
+        }, $commentWord);
+
+        // Filter Badword (Remove it)
+        // $cleanWord = array_filter($commentWord, function ($word) use ($badWord) {
+        //     return !in_array(strtolower($word), $badWord);
+        // });
+
+        $cleanComentar = implode(' ', $cleanWord);
+
+        return $cleanComentar;
     }
 
     public function guestDeleteComment(Request $request)
