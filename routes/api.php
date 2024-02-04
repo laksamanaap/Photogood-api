@@ -15,6 +15,7 @@ use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\PhotoGuestController;
 use App\Http\Controllers\PhotoMemberController;
+use App\Http\Controllers\RoomDiscussController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +72,16 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/store-guest-photo', [PhotoGuestController::class, 'guestStorePhoto'])->name('guestStorePhoto');
         Route::post('v1/update-guest-photo', [PhotoGuestController::class, 'guestUpdatePhoto'])->name('guestUpdatePhoto');
         Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');
+
+        // Discuss - ok
+        Route::post('v1/create-room', [RoomDiscussController::class, 'createRoom'])->name('createRoom');
+        Route::post('v1/update-room', [RoomDiscussController::class, 'updateRoom'])->name('updateRoom');
+        Route::delete('v1/delete-room', [RoomDiscussController::class, 'deleteRoom'])->name('deleteRoom');
+        Route::get('v1/show-all-room', [RoomDiscussController::class, 'showAllRoom'])->name('showAllRoom');
+        Route::get('v1/show-room-messages', [RoomDiscussController::class, 'showAllRoomMessages'])->name('showAllRoomMessages');
+
+        // Discuss Messages
+        
 
     }
 );

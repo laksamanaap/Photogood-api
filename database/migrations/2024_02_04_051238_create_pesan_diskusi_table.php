@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('pesan_id');
             $table->string('isi_pesan');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('ruang_id');
+            $table->uuid('ruang_id'); 
             $table->unsignedBigInteger('member_id')->nullable();
             $table->timestamps();
 

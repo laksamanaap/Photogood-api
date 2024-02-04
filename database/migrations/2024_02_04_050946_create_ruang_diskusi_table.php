@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ruang_diskusi', function (Blueprint $table) {
-            $table->id('ruang_id');
-            $table->string('nama_room');
-            $table->string('deskripsi_room');
-            $table->string('ruang_profil')->nullable();
+            $table->string('ruang_id')->primary();
+            $table->string('nama_ruang');
+            $table->string('deskripsi_ruang');
+            $table->string('profil_ruang')->nullable();
             $table->timestamps();
         });
     }
