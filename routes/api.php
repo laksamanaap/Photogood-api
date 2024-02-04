@@ -16,6 +16,7 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\PhotoGuestController;
 use App\Http\Controllers\PhotoMemberController;
 use App\Http\Controllers\RoomDiscussController;
+use App\Http\Controllers\MessageDiscussController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,8 +81,11 @@ Route::middleware(UserMiddleware::class)->group(
         Route::get('v1/show-all-room', [RoomDiscussController::class, 'showAllRoom'])->name('showAllRoom');
         Route::get('v1/show-room-messages', [RoomDiscussController::class, 'showAllRoomMessages'])->name('showAllRoomMessages');
 
-        // Discuss Messages
-        
+        // Discuss Messages - ok
+        Route::post('v1/store-message', [MessageDiscussController::class, 'storeMessages'])->name('storeMessages');
+        Route::post('v1/update-message', [MessageDiscussController::class, 'updateMessages'])->name('updateMessages');
+        Route::delete('v1/delete-message', [MessageDiscussController::class, 'deleteMessages'])->name('deleteMessages');
+
 
     }
 );

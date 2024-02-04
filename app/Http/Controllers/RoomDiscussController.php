@@ -22,7 +22,7 @@ class RoomDiscussController extends Controller
         }
 
         $room = RuangDiskusi::create([
-            'ruang_id' => Str::uuid(), 
+            'ruang_id' => Str::uuid()->toString(), 
             'nama_ruang' => $request->input('nama_ruang'),
             'deskripsi_ruang' => $request->input('deskripsi_ruang'),
             'profil_ruang' => $request->input('profil_ruang'),
@@ -95,11 +95,24 @@ class RoomDiscussController extends Controller
     }
 
 
-    public function showRoomMessages(Request $request)
+    public function showAllRoomMessages(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'ruang_id' => 'required|string', 
+        ]);
 
-        
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
 
+        $ruang_id = $request->input('ruang_id');
+
+        $room = RuangDiskusi::with('messages.user')->where('ruang_id', $ruang_id)->first();
+
+        if (!$room) {
+            return response()->json(['message' => 'Room not found!'],404);
+        }
+
+        return response()->json($room, 200);
     }
-
 }
