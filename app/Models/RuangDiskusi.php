@@ -18,5 +18,10 @@ class RuangDiskusi extends Model
         return $this->hasMany(PesanDiskusi::class, 'ruang_id');
     }
 
+    public function member()
+    {
+        return $this->hasMany(AnggotaDiskusi::class,'ruang_id');
+    }
+
     use HasFactory;
 }

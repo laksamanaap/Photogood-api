@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use App\Models\RuangDiskusi;
 use Illuminate\Http\Request;
+use App\Models\AnggotaDiskusi;
 use Illuminate\Support\Facades\Validator;
 
 class RoomDiscussController extends Controller
@@ -107,12 +108,72 @@ class RoomDiscussController extends Controller
 
         $ruang_id = $request->input('ruang_id');
 
-        $room = RuangDiskusi::with('messages.user')->where('ruang_id', $ruang_id)->first();
+        $room = RuangDiskusi::with(['member.user','messages.user'])->where('ruang_id', $ruang_id)->first();
 
         if (!$room) {
             return response()->json(['message' => 'Room not found!'],404);
         }
 
         return response()->json($room, 200);
+    }
+
+
+    public function joinRoom(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ruang_id' => 'required|string', 
+            'user_id' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
+
+        $ruang_id = $request->input('ruang_id');
+        $user_id = $request->input('user_id');
+
+        $room = RuangDiskusi::where('ruang_id', $ruang_id)->first();
+
+        if (!$room) {
+            return response()->json(['message' => 'Room not found!'], 404);
+        }
+
+        $existingMember = AnggotaDiskusi::where('ruang_id', $ruang_id)->where('user_id', $user_id)->first();
+
+        if ($existingMember) {
+            return response()->json(['message' => 'User already joined this room.'], 400);
+        }
+
+        $member = new AnggotaDiskusi();
+        $member->ruang_id = $ruang_id;
+        $member->user_id = $user_id;
+        $member->save();
+
+        return response()->json(['message' => 'User successfully joined the room.'], 200);
+    }
+
+   public function leaveRoom(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ruang_id' => 'required|string', 
+            'user_id' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
+
+        $ruang_id = $request->input('ruang_id');
+        $user_id = $request->input('user_id');
+
+        $existingMember = AnggotaDiskusi::where('ruang_id', $ruang_id)->where('user_id', $user_id)->first();
+
+        if (!$existingMember) {
+            return response()->json(['message' => 'User is not a member of this room.'], 400);
+        }
+
+        $existingMember->delete();
+
+        return response()->json(['message' => 'User successfully left the room.'], 200);
     }
 }
