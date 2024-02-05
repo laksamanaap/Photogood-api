@@ -89,8 +89,8 @@ Route::middleware(UserMiddleware::class)->group(
         // Join Room
         Route::post('v1/join-room', [RoomDiscussController::class, 'joinRoom'])->name('joinRoom');
         Route::post('v1/leave-room', [RoomDiscussController::class, 'leaveRoom'])->name('leaveRoom');
+        Route::get('v1/show-room-member', [RoomDiscussController::class, 'showMemberRoom'])->name('showMemberRoom');
         
-
     }
 );
 

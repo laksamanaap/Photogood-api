@@ -176,4 +176,28 @@ class RoomDiscussController extends Controller
 
         return response()->json(['message' => 'User successfully left the room.'], 200);
     }
+
+    public function showMemberRoom(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ruang_id' => 'required|string', 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
+
+        $ruang_id = $request->input('ruang_id');
+
+        $room = RuangDiskusi::with('member.user')->where('ruang_id', $ruang_id)->first();
+
+        if (!$room) {
+            return response()->json(['message' => 'Room not found!'],404);
+        }
+
+        return response()->json($room, 200);
+
+    }
+
+
 }
