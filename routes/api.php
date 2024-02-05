@@ -11,6 +11,7 @@ use App\Http\Controllers\AlbumController;
 use App\Http\Middleware\MemberMiddleware;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\PhotoGuestController;
@@ -42,14 +43,15 @@ Route::get('/get-photo/{foto_id}', [PhotoGuestController::class, 'getPhotoDetail
 Route::get('/get-photo-image/{foto_id}', [PhotoGuestController::class, 'getPhotoImage'])->name('getPhotoImage');
 
 Route::get('/get-all-photo', [PhotoGuestController::class, 'showAllPhoto'])->name('showAllPhoto');
-
 Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
 
 Route::middleware(UserMiddleware::class)->group(
     function(){
 
-        // Subscribe - Ongoing - Hardest
-        
+        // Subscribe - (Midtrans) - Still Dummy
+        Route::post('v1/payment', [PaymentController::class, 'createMidtransPayment'])->name('createMidtransPayment');
+        Route::post('v2/payment', [PaymentController::class, 'createQRISPayment'])->name('createQRISPayment');
+
         // Download Photo - Ongoing - Medium
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
 
@@ -74,7 +76,7 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/update-guest-photo', [PhotoGuestController::class, 'guestUpdatePhoto'])->name('guestUpdatePhoto');
         Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');
 
-        // Discuss - waiting
+        // Discuss - ok
         Route::post('v1/create-room', [RoomDiscussController::class, 'createRoom'])->name('createRoom');
         Route::post('v1/update-room', [RoomDiscussController::class, 'updateRoom'])->name('updateRoom');
         Route::delete('v1/delete-room', [RoomDiscussController::class, 'deleteRoom'])->name('deleteRoom');
@@ -86,7 +88,7 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/update-message', [MessageDiscussController::class, 'updateMessages'])->name('updateMessages');
         Route::delete('v1/delete-message', [MessageDiscussController::class, 'deleteMessages'])->name('deleteMessages');
 
-        // Join Room
+        // Join Room - ok
         Route::post('v1/join-room', [RoomDiscussController::class, 'joinRoom'])->name('joinRoom');
         Route::post('v1/leave-room', [RoomDiscussController::class, 'leaveRoom'])->name('leaveRoom');
         Route::get('v1/show-room-member', [RoomDiscussController::class, 'showMemberRoom'])->name('showMemberRoom');

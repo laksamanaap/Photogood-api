@@ -20,7 +20,7 @@ class MessageDiscussController extends Controller
         if ($validator->fails()) {
             return response()->json([$validator->errors()], 422);
         }
-        
+
         // Find Anggota Diskusi
         $ruang_id = $request->input('ruang_id');
         $user_id = $request->input('user_id');
@@ -89,6 +89,7 @@ class MessageDiscussController extends Controller
     {
    
         $badWord = [
+        'anjing ',
         'anjingg',
         'anjinggg',
         'babi',

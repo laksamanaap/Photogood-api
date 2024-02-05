@@ -12,19 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('riwayat_pembayaran', function (Blueprint $table) {
-            $table->id('riwayat_id');
+            $table->string('riwayat_id');
+            $table->string('status');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('foto_id');
             $table->integer('nominal_pembayaran');
+            $table->string('checkout_link');
             $table->timestamps();
-
+            
             $table->foreign('user_id')->references('user_id')->on('users');
-            $table->foreign('foto_id')->references('foto_id')->on('foto');
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Reverse the migrations.$
      */
     public function down(): void
     {
