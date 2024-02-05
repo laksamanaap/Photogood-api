@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\RiwayatPembayaran;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 
 class PaymentController extends Controller
 {
@@ -40,19 +42,72 @@ class PaymentController extends Controller
             ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params);
 
             $response = json_decode($response->body());
-
             $payment = new RiwayatPembayaran();
             $payment->riwayat_id = $params['transaction_details']['order_id'];
-            $payment->status = 'pending';
             $payment->user_id = $params['customer_details']['user_id'];
-            $payment->checkout_link = $response->redirect_url;
+            $payment->status = 'pending';
             $payment->nominal_pembayaran = $params['item_details'][0]['price'];
+            $payment->payment_gateway = 'midtrans';
+            $payment->checkout_link = $response->redirect_url;
             $payment->save();
 
             return response()->json([
                 'payment_info' => $response,
                 'payment' => $payment
             ],200);
+    }
+
+    // Update soon
+    public function createQRISPayment(Request $request)
+    {
+
+    }
+
+    // Get Payment Information
+    public function showUserPaymentList(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
+
+        $token = $request->input('token');
+
+        $user = User::where('login_tokens', $token)->first();
+        $userID = $user->user_id;
+
+        $riwayatPembayaran = RiwayatPembayaran::where('user_id',$userID)->get();
+
+        if (!$riwayatPembayaran) {
+            return response()->json(['message' => 'No Payment History Found!'], 404);
+        }
+
+        return response()->json($riwayatPembayaran,200);
+    }
+
+    public function showPaymentDetail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'riwayat_id' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
+
+        $riwayat_id = $request->input('riwayat_id');
+
+        $detailPembayaran = RiwayatPembayaran::where('riwayat_id', $riwayat_id)->first();
+
+        if (!$detailPembayaran) {
+            return response()->json(['message' => "There's no payment history detail"], 404);
+        }
+
+        return response()->json($detailPembayaran,200);
+ 
     }
 
 }

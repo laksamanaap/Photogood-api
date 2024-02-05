@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('status');
             $table->unsignedBigInteger('user_id');
             $table->integer('nominal_pembayaran');
+            $table->string('payment_gateway');
             $table->string('checkout_link');
             $table->timestamps();
             

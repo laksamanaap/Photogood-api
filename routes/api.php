@@ -48,12 +48,15 @@ Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('sear
 Route::middleware(UserMiddleware::class)->group(
     function(){
 
-        // Subscribe - (Midtrans) - Still Dummy
-        Route::post('v1/payment', [PaymentController::class, 'createMidtransPayment'])->name('createMidtransPayment');
-        Route::post('v2/payment', [PaymentController::class, 'createQRISPayment'])->name('createQRISPayment');
-
         // Download Photo - Ongoing - Medium
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
+
+        // Subscribe - (Midtrans) - ok Still Dummy
+        Route::post('v1/store-midtrans-payment', [PaymentController::class, 'createMidtransPayment'])->name('createMidtransPayment');
+        Route::post('v1/store-qris-payment', [PaymentController::class, 'createQRISPayment'])->name('createQRISPayment');
+        
+        Route::get('v1/show-user-payment-list', [PaymentController::class, 'showUserPaymentList'])->name('showUserPaymentList');
+        Route::get('v1/show-payment-detail', [PaymentController::class, 'showPaymentDetail'])->name('showPaymentDetail');
 
         // Update User Profile - ok
         Route::get('v1/show-user-detail/{user_id}', [AuthController::class, 'showUserDetail'])->name('showUserDetail');
