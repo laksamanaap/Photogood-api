@@ -118,7 +118,7 @@ class AuthController extends Controller
 public function loginUsers(Request $request)
 {
     $validator = Validator::make($request->all(), [
-        'Username' => 'required|string',
+        'username' => 'required|string',
         'password' => 'required|string'
     ]);
 
@@ -127,7 +127,7 @@ public function loginUsers(Request $request)
     }
 
     if ($token = auth()->attempt([
-        'Username' => $request->input('Username'),
+        'username' => $request->input('username'),
         'password' => $request->input('password')
     ])) {
         $user = auth()->user();
@@ -180,26 +180,22 @@ public function loginUsers(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
-            'Username' => 'required|string',
-            'NamaLengkap' => 'required|string',
-            'Password' => 'required|string',
-            'Email' => 'required|string',
-            'Alamat' => 'required|string',
+            'username' => 'required|string',
+            'password' => 'required|string',
+            'email' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([$validator->errors()], 422);
         }
 
-        if (User::where('Username', $request->input('Username'))->exists()) {
-            return response()->json(['message' => 'Username has been used by another user!'], 401);
+        if (User::where('username', $request->input('username'))->exists()) {
+            return response()->json(['message' => 'username has been used by another user!'], 401);
         } else {
              $this->validate($request, [
-            'Username' => 'required|string',
-            'NamaLengkap' => 'required|string',
-            'Password' => 'required|string',
-            'Email' => 'required|string',
-            'Alamat' => 'required|string',
+            'username' => 'required|string',
+            'password' => 'required|string',
+            'email' => 'required|string',
         ]
     );
 
@@ -208,11 +204,11 @@ public function loginUsers(Request $request)
         // Status 2 : Member
         // Status 3 : Admin
         $user = User::create([
-            'username' => $request->input('Username'),
-            'nama_lengkap' => $request->input('NamaLengkap'),
-            'password' => bcrypt($request->input('Password')),
-            'email' => $request->input('Email'),
-            'alamat' => $request->input('Alamat'),
+            'username' => $request->input('username'),
+            'nama_lengkap' => $request->input('nama_lengkap'),
+            'password' => bcrypt($request->input('password')),
+            'email' => $request->input('email'),
+            'alamat' => $request->input('alamat'),
             'status' => 1, // The Default is 1 or active
         ]);
 

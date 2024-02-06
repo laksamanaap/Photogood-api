@@ -55,6 +55,7 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/store-midtrans-payment', [PaymentController::class, 'createMidtransPayment'])->name('createMidtransPayment');
         Route::post('v1/store-qris-payment', [PaymentController::class, 'createQRISPayment'])->name('createQRISPayment');
         
+        // Show payment - ok
         Route::get('v1/show-user-payment-list', [PaymentController::class, 'showUserPaymentList'])->name('showUserPaymentList');
         Route::get('v1/show-payment-detail', [PaymentController::class, 'showPaymentDetail'])->name('showPaymentDetail');
 
