@@ -232,6 +232,9 @@ public function loginUsers(Request $request)
             return response()->json(['message' => 'User not found!']);
         }
 
+        $appUrl = env('APP_URL');
+        $user->foto_profil = "{$appUrl}/{$user->foto_profil}";
+
         return response()->json($user,200);
     }
 
@@ -284,7 +287,7 @@ public function loginUsers(Request $request)
         $imagePath = $image->store($uploadFolders, 'public');
 
         $user = User::with('member')->find($userID);
-        $user->foto_profil = Storage::disk('public')->url($imagePath); 
+        $user->foto_profil = "storage/" . $imagePath; 
         $user->save();
 
         return response()->json([
@@ -294,6 +297,7 @@ public function loginUsers(Request $request)
 
     }
 
+    // Waiting
     public function addMember(Request $request)
     {
         

@@ -46,6 +46,8 @@ Route::get('/get-all-photo', [PhotoGuestController::class, 'showAllPhoto'])->nam
 Route::get('/get-all-gif', [PhotoGuestController::class, 'showAllGIF'])->name('showAllGIF');
 Route::get('/get-all-vector', [PhotoGuestController::class, 'showAllVector'])->name('showAllVector');
 
+Route::post('v1/store-guest-photo', [PhotoGuestController::class, 'guestStorePhoto'])->name('guestStorePhoto');
+
 
 Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
 
@@ -80,7 +82,6 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/update-guest-comment', [CommentController::class, 'guestUpdateComment'])->name('guestUpdateComment');
 
         // Photos - ok (Encrypted but still bug)
-        Route::post('v1/store-guest-photo', [PhotoGuestController::class, 'guestStorePhoto'])->name('guestStorePhoto');
         Route::post('v1/update-guest-photo', [PhotoGuestController::class, 'guestUpdatePhoto'])->name('guestUpdatePhoto');
         Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');
 
