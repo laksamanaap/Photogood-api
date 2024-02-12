@@ -18,6 +18,7 @@ class PhotoGuestController extends Controller
             'deskripsi_foto' => 'required|string',
             'user_id' => 'required|string',
             'kategori_id' => 'required|string',
+            'type_foto' => 'required|string',
             'images.*' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
@@ -34,10 +35,10 @@ class PhotoGuestController extends Controller
         $userImageCount = Foto::where('user_id', $request->input('user_id'))->count();
 
         if ($userImageCount >= 2) {
-            return response()->json(['message' => 'User can only store 2 images only. Subscribe to unlimited photo store!'], 404);
+            return response()->json(['message' => 'User can only store 2 images only. Subscribe to unlimited photo store!'], 401);
         } 
 
-        $base64Image = base64_encode(file_get_contents(storage_path("app/public/{$imagePath}")));
+        // $base64Image = base64_encode(file_get_contents(storage_path("app/public/{$imagePath}")));
 
         $imageModel = Foto::create([
             'judul_foto' => $request->input("judul_foto"),
@@ -47,7 +48,8 @@ class PhotoGuestController extends Controller
             'kategori_id' => $request->input("kategori_id"),
             'status' => 0, // Default, waiting for admin accepted
             'type_file' => $image->getClientMimeType(),
-            'lokasi_file' => $base64Image,
+            'type_foto' => $request->input('type_foto'),
+            'lokasi_file' => Storage::disk('public')->url($imagePath),
         ]);
 
         return response()->json([
@@ -136,12 +138,13 @@ class PhotoGuestController extends Controller
             return response()->json(['message' => "Cannot find data foto_id $fotoID"]);
         }
 
-        $imageData = base64_decode($foto->lokasi_file);
+        // $imageData = base64_decode($foto->lokasi_file);
 
         return response($foto, 200);
 
     }
 
+    // Temporary not used
     public function getPhotoImage(Request $request, $fotoID)
     {
        $foto = Foto::find($fotoID);
@@ -160,19 +163,48 @@ class PhotoGuestController extends Controller
         ];
 
         return response($imageData, 200)->withHeaders($headers);
-
     }
 
 
-    public function showAllPhoto(Request $request)
+   public function showAllPhoto(Request $request)
     {
-        $foto = Foto::where('status',1)->get();
+        $foto = Foto::where('status', 1)->where('type_foto', 'foto')
+        ->orWhere('type_foto', 'FOTO')
+        ->orWhere('type_foto', 'Foto')
+        ->get();
 
         if (!$foto) {
             return response()->json(['message' => 'Not photo found!']);
         }
-
         return response()->json($foto, 200);
+    }
+
+   public function showAllGIF(Request $request)
+    {
+        $gif = Foto::where('status', 1)->where('type_foto', 'gif')
+        ->orWhere('type_foto', 'GIF')
+        ->orWhere('type_foto', 'Gif')
+        ->get();
+
+        if ($gif->isEmpty()) {
+            return response()->json(['message' => 'No GIF found!'], 404);
+        }
+
+        return response()->json($gif, 200);
+    }
+
+    public function showAllVector(Request $request)
+    {
+        $vector = Foto::where('status', 1)->where('type_foto', 'vector')
+        ->orWhere('type_foto', 'VECTOR')
+        ->orWhere('type_foto', 'Vector')
+        ->get();
+
+        if ($vector->isEmpty()) {
+            return response()->json(['message' => 'No vector found!'], 404);
+        }
+
+        return response()->json($vector, 200);
     }
 
 

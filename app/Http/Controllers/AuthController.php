@@ -138,7 +138,7 @@ public function loginUsers(Request $request)
 
         return response()->json($userWithMember,200);
     } else {
-        return response()->json(['error' => 'Try to check your username or password'], 401);
+        return response()->json(['message' => 'Try to check your username or password!'], 401);
     }
 }
 

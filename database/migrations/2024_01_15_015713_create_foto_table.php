@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('deskripsi_foto');
             $table->longText('lokasi_file');
             $table->string('type_file');
+            $table->string('type_foto'); // GIF, Photo, or etc
             $table->integer('status');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('member_id')->nullable();

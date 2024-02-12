@@ -43,6 +43,10 @@ Route::get('/get-photo/{foto_id}', [PhotoGuestController::class, 'getPhotoDetail
 Route::get('/get-photo-image/{foto_id}', [PhotoGuestController::class, 'getPhotoImage'])->name('getPhotoImage');
 
 Route::get('/get-all-photo', [PhotoGuestController::class, 'showAllPhoto'])->name('showAllPhoto');
+Route::get('/get-all-gif', [PhotoGuestController::class, 'showAllGIF'])->name('showAllGIF');
+Route::get('/get-all-vector', [PhotoGuestController::class, 'showAllVector'])->name('showAllVector');
+
+
 Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
 
 Route::middleware(UserMiddleware::class)->group(
