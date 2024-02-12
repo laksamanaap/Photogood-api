@@ -49,7 +49,7 @@ class PhotoGuestController extends Controller
             'status' => 0, // Default, waiting for admin accepted
             'type_file' => $image->getClientMimeType(),
             'type_foto' => $request->input('type_foto'),
-            'lokasi_file' => Storage::disk('public')->url($imagePath),
+            'lokasi_file' => "storage/" . $imagePath, 
         ]);
 
         return response()->json([
@@ -91,7 +91,7 @@ class PhotoGuestController extends Controller
         $uploadImageResponse = [
             'foto_id' => $existingImage->foto_id,
             'image_name' => basename($newImagePath),
-            'image_url' => Storage::disk('public')->url($newImagePath),
+            'image_url' => url($newImagePath),
             'mime' => $newImage->getClientMimeType(),
         ];
 
@@ -138,6 +138,9 @@ class PhotoGuestController extends Controller
             return response()->json(['message' => "Cannot find data foto_id $fotoID"]);
         }
 
+        $appUrl = env('APP_URL');
+        $foto->lokasi_file = "{$appUrl}/{$foto->lokasi_file}";
+
         // $imageData = base64_decode($foto->lokasi_file);
 
         return response($foto, 200);
@@ -179,15 +182,20 @@ class PhotoGuestController extends Controller
         return response()->json($foto, 200);
     }
 
-   public function showAllGIF(Request $request)
+    public function showAllGIF(Request $request)
     {
-        $gif = Foto::where('status', 1)->where('type_foto', 'gif')
-        ->orWhere('type_foto', 'GIF')
-        ->orWhere('type_foto', 'Gif')
-        ->get();
+        $gif = Foto::where('status', 1)
+                    ->whereIn('type_foto', ['gif', 'GIF', 'Gif'])
+                    ->get();
 
         if ($gif->isEmpty()) {
             return response()->json(['message' => 'No GIF found!'], 404);
+        }
+
+        $appUrl = env('APP_URL');
+
+        foreach ($gif as $item) {
+            $item->lokasi_file = "{$appUrl}/{$item->lokasi_file}";
         }
 
         return response()->json($gif, 200);
@@ -195,13 +203,18 @@ class PhotoGuestController extends Controller
 
     public function showAllVector(Request $request)
     {
-        $vector = Foto::where('status', 1)->where('type_foto', 'vector')
-        ->orWhere('type_foto', 'VECTOR')
-        ->orWhere('type_foto', 'Vector')
+        $vector = Foto::where('status', 1)
+        ->whereIn('type_foto', ['vector', 'VECTOR', 'Vector'])
         ->get();
 
         if ($vector->isEmpty()) {
             return response()->json(['message' => 'No vector found!'], 404);
+        }
+
+        $appUrl = env('APP_URL');
+
+        foreach ($vector as $item) {
+            $item->lokasi_file = "{$appUrl}/{$item->lokasi_file}";
         }
 
         return response()->json($vector, 200);
