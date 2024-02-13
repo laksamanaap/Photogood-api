@@ -146,6 +146,7 @@ class PhotoGuestController extends Controller
                 $comment->user->foto_profil = "{$appUrl}/{$comment->user->foto_profil}";
             }
         }
+        
         $foto->lokasi_file = "{$appUrl}/{$foto->lokasi_file}";
 
          if ($foto->user && $foto->user->foto_profil ) {

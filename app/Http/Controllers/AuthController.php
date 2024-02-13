@@ -223,19 +223,22 @@ public function loginUsers(Request $request)
        
     }
 
-
-    public function showUserDetail(Request $request, $userID)
+    public function showUserDetail(Request $request)
     {
-        $user = User::with('member')->find($userID);
+        $loginToken = $request->input('token');
+
+        $user = User::where('login_tokens', $loginToken)->with('member')->first();
 
         if (!$user) {
-            return response()->json(['message' => 'User not found!']);
+            return response()->json(['message' => 'User not found!'], 404);
         }
 
         $appUrl = env('APP_URL');
-        $user->foto_profil = "{$appUrl}/{$user->foto_profil}";
+        if ($user->foto_profil != null) {
+            $user->foto_profil = "{$appUrl}/{$user->foto_profil}";
+        }
 
-        return response()->json($user,200);
+        return response()->json($user, 200);
     }
 
     public function updateUserDetail(Request $request, $userID)
@@ -271,16 +274,19 @@ public function loginUsers(Request $request)
 
     }
 
-    public function storeUserPhoto(Request $request, $userID)
+    public function storeUserPhoto(Request $request)
     {
-
          $validator = Validator::make($request->all(), [
-            'images.*' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
+            'images.*' => 'required|image:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json([$validator->errors()],422);
         }
+
+        $loginToken = $request->input("token");
+        $userByToken = User::where('login_tokens', $loginToken)->first();
+        $userID = $userByToken->user_id;
 
         $uploadFolders = 'foto_user';
         $image = $request->file('images');
@@ -297,10 +303,66 @@ public function loginUsers(Request $request)
 
     }
 
-    // Waiting
-    public function addMember(Request $request)
+    public function updateUserPhoto(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'images' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
+
+        $loginToken = $request->input("token");
+        $user = User::where('login_tokens', $loginToken)->first();
+
+        $uploadFolder = 'foto_user';
+        $oldImagePath = $user->foto_profil;
+
+        if ($oldImagePath) {
+            Storage::disk('public')->delete($oldImagePath);
+        }
+
+        $image = $request->file('images');
+        $imagePath = $image->store($uploadFolder, 'public');
+
+        $user->foto_profil = "storage/" . $imagePath;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Image updated successfully',
+            'data' => $user
+        ]);
+
+    }
+
+    public function deleteUserPhoto(Request $request)
     {
         
+        $loginToken = $request->input("token");
+        $user = User::where('login_tokens', $loginToken)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'Invalid token'], 401);
+        }
+
+        $oldImagePath = $user->foto_profil;
+
+        if ($oldImagePath) {
+            Storage::disk('public')->delete($oldImagePath);
+            $user->foto_profil = null; 
+            $user->save();
+
+            return response()->json([
+                'message' => 'Image deleted successfully',
+                'data' => $user
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'No image to delete',
+            'data' => $user
+        ]);
     }
 
     

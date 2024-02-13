@@ -46,8 +46,6 @@ Route::get('/get-all-photo', [PhotoGuestController::class, 'showAllPhoto'])->nam
 Route::get('/get-all-gif', [PhotoGuestController::class, 'showAllGIF'])->name('showAllGIF');
 Route::get('/get-all-vector', [PhotoGuestController::class, 'showAllVector'])->name('showAllVector');
 
-Route::post('v1/store-guest-photo', [PhotoGuestController::class, 'guestStorePhoto'])->name('guestStorePhoto');
-
 
 Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
 
@@ -66,9 +64,13 @@ Route::middleware(UserMiddleware::class)->group(
         Route::get('v1/show-payment-detail', [PaymentController::class, 'showPaymentDetail'])->name('showPaymentDetail');
 
         // Update User Profile - ok
-        Route::get('v1/show-user-detail/{user_id}', [AuthController::class, 'showUserDetail'])->name('showUserDetail');
+        Route::get('v1/show-user-detail', [AuthController::class, 'showUserDetail'])->name('showUserDetail');
         Route::post('v1/update-user-detail/{user_id}', [AuthController::class, 'updateUserDetail'])->name('updateUserDetail');
-        Route::post('v1/store-user-photo/{user_id}', [AuthController::class, 'storeUserPhoto'])->name('storeUserPhoto');
+       
+        // Update User Profile Photo - ok
+        Route::post('v1/store-user-photo', [AuthController::class, 'storeUserPhoto'])->name('storeUserPhoto');
+        Route::post('v1/update-user-photo', [AuthController::class, 'updateUserPhoto'])->name('updateUserPhoto');
+        Route::post('v1/delete-user-photo', [AuthController::class, 'deleteUserPhoto'])->name('deleteUserPhoto');
 
         // Like - ok
         Route::get('v1/show-photo-like/{foto_id}', [LikeController::class, 'showPhotoLike'])->name('showPhotoLike');
@@ -82,6 +84,7 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/update-guest-comment', [CommentController::class, 'guestUpdateComment'])->name('guestUpdateComment');
 
         // Photos - ok (Encrypted but still bug)
+        Route::post('v1/store-guest-photo', [PhotoGuestController::class, 'guestStorePhoto'])->name('guestStorePhoto');
         Route::post('v1/update-guest-photo', [PhotoGuestController::class, 'guestUpdatePhoto'])->name('guestUpdatePhoto');
         Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');
 
