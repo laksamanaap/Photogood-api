@@ -241,7 +241,7 @@ public function loginUsers(Request $request)
         return response()->json($user, 200);
     }
 
-    public function updateUserDetail(Request $request, $userID)
+    public function updateUserDetail(Request $request)
     {
 
          $validator = Validator::make($request->all(), [
@@ -254,6 +254,10 @@ public function loginUsers(Request $request)
         if ($validator->fails()) {
             return response()->json([$validator->errors()],422);
         }
+
+        $loginToken = $request->input('token');
+        $userByToken = User::where('login_tokens', $loginToken)->first();
+        $userID = $userByToken->user_id;
 
         $user = User::with('member')->find($userID);
 

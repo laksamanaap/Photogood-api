@@ -65,7 +65,7 @@ Route::middleware(UserMiddleware::class)->group(
 
         // Update User Profile - ok
         Route::get('v1/show-user-detail', [AuthController::class, 'showUserDetail'])->name('showUserDetail');
-        Route::post('v1/update-user-detail/{user_id}', [AuthController::class, 'updateUserDetail'])->name('updateUserDetail');
+        Route::post('v1/update-user-detail', [AuthController::class, 'updateUserDetail'])->name('updateUserDetail');
        
         // Update User Profile Photo - ok
         Route::post('v1/store-user-photo', [AuthController::class, 'storeUserPhoto'])->name('storeUserPhoto');
