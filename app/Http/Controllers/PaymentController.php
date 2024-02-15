@@ -50,6 +50,15 @@ class PaymentController extends Controller
             $member = new Member();
             $member->user_id = $params['customer_details']['user_id'];
             $member->save();
+
+            // Status 2 (Member)
+            $user = User::find($params['customer_details']['user_id']);
+            if ($user) {
+                $user->status = 2;
+                $user->save();
+            } else {
+                return response()->json(['error' => 'User not found'], 404);
+            }
         }
 
         $response = json_decode($response->body());
