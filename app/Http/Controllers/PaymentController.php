@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Member;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\RiwayatPembayaran;
@@ -25,36 +26,47 @@ class PaymentController extends Controller
                     'quantity' => 1,
                     'name' => 'Membership'
                 )
-                ),
+            ),
             'customer_details' => array(
                 'user_id' => $request->user_id
             ),
             'enabled_payments' => array(
                 'credit_card','bca_va','bni_va','bri_va'
             )
-            );
-        
-            $auth = base64_encode(env('MIDTRANS_SERVER_KEY'));
-            
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'Authorization' => "Basic $auth",
-            ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params);
+        );
 
-            $response = json_decode($response->body());
-            $payment = new RiwayatPembayaran();
-            $payment->riwayat_id = $params['transaction_details']['order_id'];
-            $payment->user_id = $params['customer_details']['user_id'];
-            $payment->status = 'pending';
-            $payment->nominal_pembayaran = $params['item_details'][0]['price'];
-            $payment->payment_gateway = 'midtrans';
-            $payment->checkout_link = $response->redirect_url;
-            $payment->save();
+        $auth = base64_encode(env('MIDTRANS_SERVER_KEY'));
 
-            return response()->json([
-                'payment_info' => $response,
-                'payment' => $payment
-            ],200);
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => "Basic $auth",
+        ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params);
+
+        $existingMember = Member::where('user_id', $params['customer_details']['user_id'])->first();
+
+        if ($existingMember) {
+            return response()->json(['error' => 'This user is already be photogood member!'], 400);
+        } else {
+            $member = new Member();
+            $member->user_id = $params['customer_details']['user_id'];
+            $member->save();
+        }
+
+        $response = json_decode($response->body());
+        $payment = new RiwayatPembayaran();
+        $payment->riwayat_id = $params['transaction_details']['order_id'];
+        $payment->user_id = $params['customer_details']['user_id'];
+        $payment->status = 'pending';
+        $payment->nominal_pembayaran = $params['item_details'][0]['price'];
+        $payment->payment_gateway = 'midtrans';
+        $payment->checkout_link = $response->redirect_url;
+        $payment->save();
+
+        return response()->json([
+            'payment_info' => $response,
+            'member_info' => $member,
+            'payment' => $payment
+        ],200);
     }
 
     // Update soon

@@ -33,11 +33,11 @@ class PhotoGuestController extends Controller
         $image = $request->file('images');
         $imagePath = $image->store($uploadFolders, 'public');
 
-        // $userImageCount = Foto::where('user_id', $request->input('user_id'))->count();
+        $userImageCount = Foto::where('user_id', $request->input('user_id'))->count();
 
-        // if ($userImageCount >= 2) {
-        //     return response()->json(['message' => 'User can only store 2 images only. Subscribe to unlimited photo store!'], 401);
-        // } 
+        if ($userImageCount >= 2) {
+            return response()->json(['message' => 'User can only store 2 images only. Subscribe to unlimited photo store!'], 401);
+        } 
 
         // $base64Image = base64_encode(file_get_contents(storage_path("app/public/{$imagePath}")));
 
