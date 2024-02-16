@@ -44,8 +44,18 @@ class PaymentController extends Controller
 
         $existingMember = Member::where('user_id', $params['customer_details']['user_id'])->first();
 
+        $response = json_decode($response->body());
+        $payment = new RiwayatPembayaran();
+        $payment->riwayat_id = $params['transaction_details']['order_id'];
+        $payment->user_id = $params['customer_details']['user_id'];
+        $payment->status = 'pending';
+        $payment->nominal_pembayaran = $params['item_details'][0]['price'];
+        $payment->payment_gateway = 'midtrans';
+        $payment->checkout_link = $response->redirect_url;
+        $payment->save();
+
         if ($existingMember) {
-            return response()->json(['error' => 'This user is already be photogood member!'], 400);
+            return response()->json(['message' => 'This user is already be photogood member!'], 401);
         } else {
             $member = new Member();
             $member->user_id = $params['customer_details']['user_id'];
@@ -60,16 +70,6 @@ class PaymentController extends Controller
                 return response()->json(['error' => 'User not found'], 404);
             }
         }
-
-        $response = json_decode($response->body());
-        $payment = new RiwayatPembayaran();
-        $payment->riwayat_id = $params['transaction_details']['order_id'];
-        $payment->user_id = $params['customer_details']['user_id'];
-        $payment->status = 'pending';
-        $payment->nominal_pembayaran = $params['item_details'][0]['price'];
-        $payment->payment_gateway = 'midtrans';
-        $payment->checkout_link = $response->redirect_url;
-        $payment->save();
 
         return response()->json([
             'payment_info' => $response,

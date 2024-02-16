@@ -25,7 +25,7 @@ class PhotoMemberController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $uploadFolders = 'foto';
+        $uploadFolders = 'foto_member';
 
         $foto_id = $request->input('foto_id');
         $image = $request->file('images');
@@ -37,10 +37,10 @@ class PhotoMemberController extends Controller
             'user_id' => $request->input("user_id"),
             'member_id' => $request->input("member_id"),
             'kategori_id' => $request->input("kategori_id"),
-            'status' => 0, // Default, waiting for admin accepted
+            'status' => $request->input("status"), // Default 0, waiting for admin accepted
             'type_file' => $image->getClientMimeType(),
             'type_foto' => $request->input('type_foto'),
-            'lokasi_file' => Storage::disk('public')->url($imagePath),
+            'lokasi_file' => "storage/" . $imagePath, 
         ]);
 
         return response()->json([
