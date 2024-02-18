@@ -139,5 +139,17 @@ Route::middleware(AdminMiddleware::class)->group(
         Route::post('v3/update-photo-active', [AdminController::class, 'changePhotoActive'])->name('changePhotoActive');
         Route::post('v3/update-photo-deactive', [AdminController::class, 'changePhotoDeactive'])->name('changePhotoDeactive');
         
+        // Dashboard
+
+        // Income Detail
+
+        // Manage Room Discuss
+
+        // Manage Album
+
+        // Manage User
+
+        // Manage Member
+
     }
 );
