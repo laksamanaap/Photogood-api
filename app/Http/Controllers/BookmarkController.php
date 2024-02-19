@@ -27,7 +27,7 @@ class BookmarkController extends Controller
         $user = User::where('login_tokens', $token)->first();
         $userID = $user->user_id;
 
-        $bookmarkHistory = Bookmark::where('user_id', $userID)->count();
+        $bookmarkHistory = Bookmark::where('foto_id', $request->input("foto_id"))->count();
 
         if ($bookmarkHistory >= 1) {
             return response()->json(['message' => 'This photo has been on your bookmark!'], 404);
