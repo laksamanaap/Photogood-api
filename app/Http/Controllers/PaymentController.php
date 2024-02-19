@@ -55,7 +55,7 @@ class PaymentController extends Controller
         $payment->save();
 
         if ($existingMember) {
-            return response()->json(['message' => 'This user is already be photogood member!'], 401);
+            return response()->json(['message' => 'User ini sudah terdaftar menjadi member!'], 401);
         } else {
             $member = new Member();
             $member->user_id = $params['customer_details']['user_id'];

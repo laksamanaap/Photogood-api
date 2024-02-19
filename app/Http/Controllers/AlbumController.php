@@ -95,18 +95,27 @@ class AlbumController extends Controller
 
     public function showMemberAlbum(Request $request) 
     {
-
         $token = $request->input('token');
         $user = User::where("login_tokens", $token)->first();
         $userID = $user->user_id;
 
-        $album = Album::where("user_id", $userID)->get();
-        if (!$album) {
+        $albums = Album::where("user_id", $userID)
+            ->with("bookmark_fotos")
+            ->get();
+
+        if ($albums->isEmpty()) {
             return response()->json(['message' => "Album not found!"], 404);
         }
 
-        return response()->json($album,200);
+        $response = [];
+        foreach ($albums as $album) {
+            $totalDatas = count($album->bookmark_fotos);
+            $albumData = $album->toArray();
+            $albumData['total_bookmark_data'] = $totalDatas;
+            $response[] = $albumData;
+        }
 
+        return response()->json($response, 200);
     }
 
     public function showDetailMemberAlbum(Request $request, $albumID)
@@ -124,10 +133,7 @@ class AlbumController extends Controller
         return response()->json($album,200);
     }
 
-    public function searchAlbum(Request $request)
-    {
-        
-    }
+
   
 
 }
