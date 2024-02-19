@@ -74,19 +74,31 @@ class BookmarkController extends Controller
         return response()->json(['message' => 'Bookmark was deleted succesfully']);
     }
 
-    public function showAllBookmark(Request $request)
+  public function showAllBookmark(Request $request)
     {
         $loginToken = $request->input('token');
-        $user = User::where('login_tokens',$loginToken)->first();
-        $userID = $user->user_id;
+        $user = User::where('login_tokens', $loginToken)->first();
 
-        $bookmark = Bookmark::where("user_id", $userID)->get();
-
-        if ($bookmark->isEmpty()) {
-            return response()->json(['message' => "The user hasn't save anything yet!"], 404);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
         }
 
-        return response()->json($bookmark,200);
+        $userID = $user->user_id;
+
+        $bookmarks = Bookmark::with('foto')
+                            ->where('user_id', $userID)
+                            ->get();
+
+        if ($bookmarks->isEmpty()) {
+            return response()->json(['message' => "The user hasn't saved anything yet!"], 404);
+        }
+
+        $appUrl = env('APP_URL');
+        foreach ($bookmarks as $bookmark) {
+            $bookmark->foto->lokasi_file = "{$appUrl}/{$bookmark->foto->lokasi_file}";
+        }
+
+        return response()->json($bookmarks, 200);
     }
 
 }

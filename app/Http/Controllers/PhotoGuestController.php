@@ -249,6 +249,11 @@ class PhotoGuestController extends Controller
             return response()->json(['message' => "The user hasn't posted anything yet!"], 404);
         }
 
+        $appUrl = env('APP_URL');
+        foreach ($userPhoto as $photos) {
+            $photos->lokasi_file = "{$appUrl}/{$photos->lokasi_file}";
+        }
+
         return response()->json($userPhoto,200);
 
     }
