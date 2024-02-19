@@ -34,6 +34,7 @@ class AlbumController extends Controller
         return response()->json($comment,200);
     }
 
+
     public function memberDeleteAlbum(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -123,6 +124,10 @@ class AlbumController extends Controller
         return response()->json($album,200);
     }
 
+    public function searchAlbum(Request $request)
+    {
+        
+    }
   
 
 }

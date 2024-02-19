@@ -46,8 +46,8 @@ Route::get('/get-all-photo', [PhotoGuestController::class, 'showAllPhoto'])->nam
 Route::get('/get-all-gif', [PhotoGuestController::class, 'showAllGIF'])->name('showAllGIF');
 Route::get('/get-all-vector', [PhotoGuestController::class, 'showAllVector'])->name('showAllVector');
 
-
 Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
+Route::get('search-album', [SearchController::class, 'searchAlbum'])->name('searchAlbum');
 
 Route::middleware(UserMiddleware::class)->group(
     function(){
