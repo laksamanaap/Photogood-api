@@ -55,7 +55,7 @@ Route::middleware(UserMiddleware::class)->group(
         // Download Photo - Ongoing - Medium
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
 
-        // Subscribe - (Midtrans) - ok Still Dummy
+        // Subscribe - (Midtrans) - ok
         Route::post('v1/store-midtrans-payment', [PaymentController::class, 'createMidtransPayment'])->name('createMidtransPayment');
         Route::post('v1/store-qris-payment', [PaymentController::class, 'createQRISPayment'])->name('createQRISPayment');
         
@@ -88,6 +88,9 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/update-guest-photo', [PhotoGuestController::class, 'guestUpdatePhoto'])->name('guestUpdatePhoto');
         Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');
 
+        // Get user post
+        Route::get('v1/show-user-post', [PhotoGuestController::class, 'showUserPost'])->name('showUserPost');
+
         // Discuss - ok
         Route::post('v1/create-room', [RoomDiscussController::class, 'createRoom'])->name('createRoom');
         Route::post('v1/update-room', [RoomDiscussController::class, 'updateRoom'])->name('updateRoom');
@@ -119,6 +122,7 @@ Route::middleware(MemberMiddleware::class)->group(
 
         // Bookmark - ok
         Route::get('v2/show-bookmark/{bookmark_id}', [BookmarkController::class, 'showBookmark'])->name('showBookmark');
+        Route::get('v2/show-all-bookmark', [BookmarkController::class, 'showAllBookmark'])->name('showAllBookmark');
         Route::post('v2/store-bookmark', [BookmarkController::class, 'storeBookmark'])->name('storeBookmark');
         Route::delete('v2/delete-bookmark', [BookmarkController::class, 'deleteBookmark'])->name('deleteBookmark');
         

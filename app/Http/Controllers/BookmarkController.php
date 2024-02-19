@@ -72,8 +72,21 @@ class BookmarkController extends Controller
         $bookmark = Bookmark::destroy($bookmarkID);
 
         return response()->json(['message' => 'Bookmark was deleted succesfully']);
+    }
 
+    public function showAllBookmark(Request $request)
+    {
+        $loginToken = $request->input('token');
+        $user = User::where('login_tokens',$loginToken)->first();
+        $userID = $user->user_id;
 
+        $bookmark = Bookmark::where("user_id", $userID)->get();
+
+        if ($bookmark->isEmpty()) {
+            return response()->json(['message' => "The user hasn't save anything yet!"], 404);
+        }
+
+        return response()->json($bookmark,200);
     }
 
 }

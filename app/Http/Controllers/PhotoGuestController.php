@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Foto;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class PhotoGuestController extends Controller
@@ -233,6 +234,23 @@ class PhotoGuestController extends Controller
         }
 
         return response()->json($vector, 200);
+    }
+
+    public function showUserPost(Request $request)
+    {
+
+        $loginToken = $request->input('token');
+        $user = User::where('login_tokens',$loginToken)->first();
+        $userID = $user->user_id;
+
+        $userPhoto = Foto::where("user_id", $userID)->get();
+
+        if ($userPhoto->isEmpty()) {
+            return response()->json(['message' => "The user hasn't posted anything yet!"], 404);
+        }
+
+        return response()->json($userPhoto,200);
+
     }
 
 
