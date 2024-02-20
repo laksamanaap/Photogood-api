@@ -38,21 +38,28 @@ class SearchController extends Controller
     }
 
     public function searchAlbum(Request $request) {
-        $namaAlbum = $request->query('nama_album');
+    $namaAlbum = $request->query('nama_album');
 
-          if ($namaAlbum ) {
-            $album = Album::when($namaAlbum, function ($query) use ($namaAlbum) {
-                        return $query->where('nama_album', 'like', '%' . $namaAlbum . '%');
-                    })
-                    ->get();
-            if ($album->isNotEmpty()) {
-                return response()->json($album, 200);
-            } else {
-                return response()->json(['message' => 'Album not found'], 404);
+    if ($namaAlbum) {
+        $albums = Album::with('bookmark_fotos.foto')->when($namaAlbum, function ($query) use ($namaAlbum) {
+            return $query->where('nama_album', 'like', '%' . $namaAlbum . '%');
+        })->get();
+
+        if ($albums->isNotEmpty()) {
+            $appUrl = env('APP_URL');
+            foreach ($albums as $album) {
+                $totalBookmark = count($album->bookmark_fotos);
+                $album->total_bookmark_data = $totalBookmark;
+                foreach ($album->bookmark_fotos as $bookmark) {
+                    $bookmark->foto->lokasi_file = $appUrl . '/' . $bookmark->foto->lokasi_file;
+                }
             }
+            return response()->json($albums, 200);
         } else {
-            return response()->json(['message' => 'Query not found!'], 404);
+            return response()->json(['message' => 'Album not found'], 404);
         }
-
+    } else {
+        return response()->json(['message' => 'Query not found!'], 404);
     }
+}
 }

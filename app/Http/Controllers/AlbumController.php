@@ -100,7 +100,7 @@ class AlbumController extends Controller
         $userID = $user->user_id;
 
         $albums = Album::where("user_id", $userID)
-            ->with("bookmark_fotos")
+            ->with("bookmark_fotos.foto")
             ->get();
 
         if ($albums->isEmpty()) {
@@ -111,6 +111,11 @@ class AlbumController extends Controller
         foreach ($albums as $album) {
             $totalDatas = count($album->bookmark_fotos);
             $albumData = $album->toArray();
+
+            foreach ($albumData['bookmark_fotos'] as &$bookmark) {
+                $bookmark['foto']['lokasi_file'] = env('APP_URL') . '/' . $bookmark['foto']['lokasi_file'];
+            }
+
             $albumData['total_bookmark_data'] = $totalDatas;
             $response[] = $albumData;
         }
@@ -118,7 +123,7 @@ class AlbumController extends Controller
         return response()->json($response, 200);
     }
 
-    public function showDetailMemberAlbum(Request $request, $albumID)
+     public function showDetailMemberAlbum(Request $request, $albumID)
     {
         $token = $request->input('token');
         $user = User::where("login_tokens", $token)->first();
@@ -130,7 +135,16 @@ class AlbumController extends Controller
             return response()->json(['message' => 'Album not found!']);
         }
 
-        return response()->json($album,200);
+        $appUrl = env('APP_URL');
+        foreach ($album->bookmark_fotos as $bookmark) {
+            $bookmark->foto->lokasi_file = $appUrl . '/' . $bookmark->foto->lokasi_file;
+        }
+
+        $totalBookmarkData = count($album->bookmark_fotos);
+
+        $album->total_bookmark_data = $totalBookmarkData;
+
+        return response()->json($album, 200);
     }
 
 }
