@@ -15,7 +15,7 @@ class AlbumController extends Controller
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|string',
-            'member_id' => 'required|string',
+            // 'member_id' => 'required|string',
             'nama_album' => 'required|string',
             'deskripsi_album' => 'required|string',
         ]);
@@ -26,7 +26,7 @@ class AlbumController extends Controller
 
         $comment = Album::create([
             'user_id' => $request->input('user_id'),
-            'member_id' => $request->input('member_id'),
+            // 'member_id' => $request->input('member_id'),
             'nama_album' => $request->input('nama_album'),
             'deskripsi_album' => $request->input('deskripsi_album'),
         ]);
@@ -63,7 +63,7 @@ class AlbumController extends Controller
         $validator = Validator::make($request->all(), [
             'album_id' => 'required|string',
             'user_id' => 'required|string',
-            'member_id' => 'required|string',
+            // 'member_id' => 'required|string',
             'nama_album' => 'required|string',
             'deskripsi_album' => 'required|string'
         ]);
@@ -81,7 +81,7 @@ class AlbumController extends Controller
         }
 
         $album->user_id = $request->input('user_id');
-        $album->member_id = $request->input('member_id');
+        // $album->member_id = $request->input('member_id');    
         $album->nama_album = $request->input('nama_album');
         $album->deskripsi_album = $request->input('deskripsi_album');
         $album->save();

@@ -16,28 +16,30 @@ class BookmarkController extends Controller
             'foto_id' => 'required|string',
             'album_id' => 'required|string',
             'user_id' => 'required|string',
-            'member_id' => 'required|string',
+            // 'member_id' => 'required|string',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([$validator->errors()]);
+            return response()->json([$validator->errors()], 422);
         }
 
         $token = $request->input('token');
         $user = User::where('login_tokens', $token)->first();
         $userID = $user->user_id;
 
-        $bookmarkHistory = Bookmark::where('foto_id', $request->input("foto_id"))->count();
+        $bookmarkHistory = Bookmark::where('foto_id', $request->input("foto_id"))
+                            ->where('album_id', $request->input("album_id"))
+                            ->count();
 
         if ($bookmarkHistory >= 1) {
             return response()->json(['message' => 'This photo has been on your bookmark!'], 404);
         }
-
+        
         $bookmark = Bookmark::create([
             'foto_id' => $request->input('foto_id'),
             'album_id' => $request->input('album_id'),
             'user_id' => $request->input('user_id'),
-            'member_id' => $request->input('member_id')
+            // 'member_id' => $request->input('member_id')  
         ]);
 
         return response()->json($bookmark,200);
