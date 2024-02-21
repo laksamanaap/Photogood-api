@@ -18,7 +18,7 @@ class PhotoMemberController extends Controller
             'member_id' => 'required|string',
             'kategori_id' => 'required|string',
             'type_foto' => 'required|string',
-            'images.*' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         if ($validator->fails()) {

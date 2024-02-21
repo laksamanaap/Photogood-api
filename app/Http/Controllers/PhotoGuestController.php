@@ -21,7 +21,7 @@ class PhotoGuestController extends Controller
             'kategori_id' => 'required|string',
             'type_foto' => 'required|string',
             'status' => 'required|string',
-            'images.*' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         if ($validator->fails()) {
