@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Foto;
 use App\Models\Komentar;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -104,8 +105,13 @@ class CommentController extends Controller
             return response()->json(['message' => 'foto_id not found']);
         }
 
-        return response()->json($comment, 200);
+        foreach ($comment->comment as $value) {
+            if (!Str::startsWith($value->user->foto_profil, env('APP_URL'))) {
+                $value->user->foto_profil = env('APP_URL') . '/' . $value->user->foto_profil;
+            }
+        }
 
+        return response()->json($comment, 200);
     }
 
      // Filter Comment

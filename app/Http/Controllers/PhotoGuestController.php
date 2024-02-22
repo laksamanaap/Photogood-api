@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Foto;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -142,9 +143,15 @@ class PhotoGuestController extends Controller
 
         $appUrl = env('APP_URL');
 
-        foreach ($foto->comment as $comment) {
-            if ($comment->user && $comment->user->foto_profil) {
-                $comment->user->foto_profil = "{$appUrl}/{$comment->user->foto_profil}";
+        // foreach ($foto->comment as $comment) {
+        //     if ($comment->user && $comment->user->foto_profil) {
+        //         $comment->user->foto_profil = "{$appUrl}/{$comment->user->foto_profil}";
+        //     }
+        // }
+
+          foreach ($foto->comment as $value) {
+            if (!empty($value->user->foto_profil) && !Str::startsWith($value->user->foto_profil, env('APP_URL'))) {
+                $value->user->foto_profil = env('APP_URL') . '/' . $value->user->foto_profil;
             }
         }
         
