@@ -143,12 +143,6 @@ class PhotoGuestController extends Controller
 
         $appUrl = env('APP_URL');
 
-        // foreach ($foto->comment as $comment) {
-        //     if ($comment->user && $comment->user->foto_profil) {
-        //         $comment->user->foto_profil = "{$appUrl}/{$comment->user->foto_profil}";
-        //     }
-        // }
-
           foreach ($foto->comment as $value) {
             if (!empty($value->user->foto_profil) && !Str::startsWith($value->user->foto_profil, env('APP_URL'))) {
                 $value->user->foto_profil = env('APP_URL') . '/' . $value->user->foto_profil;
@@ -249,6 +243,24 @@ class PhotoGuestController extends Controller
         $loginToken = $request->input('token');
         $user = User::where('login_tokens',$loginToken)->first();
         $userID = $user->user_id;
+
+        $userPhoto = Foto::where("user_id", $userID)->get();
+
+        if ($userPhoto->isEmpty()) {
+            return response()->json(['message' => "The user hasn't posted anything yet!"], 404);
+        }
+
+        $appUrl = env('APP_URL');
+        foreach ($userPhoto as $photos) {
+            $photos->lokasi_file = "{$appUrl}/{$photos->lokasi_file}";
+        }
+
+        return response()->json($userPhoto,200);
+
+    }
+
+    public function showUserPostByID(Request $request, $userID)
+    {
 
         $userPhoto = Foto::where("user_id", $userID)->get();
 

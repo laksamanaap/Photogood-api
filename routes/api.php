@@ -90,7 +90,8 @@ Route::middleware(UserMiddleware::class)->group(
 
         // Get user post
         Route::get('v1/show-user-post', [PhotoGuestController::class, 'showUserPost'])->name('showUserPost');
-
+        Route::get('v1/show-user-post/{user_id}', [PhotoGuestController::class, 'showUserPostByID'])->name('showUserPostByID');
+        
         // Discuss - ok
         Route::post('v1/create-room', [RoomDiscussController::class, 'createRoom'])->name('createRoom');
         Route::post('v1/update-room', [RoomDiscussController::class, 'updateRoom'])->name('updateRoom');

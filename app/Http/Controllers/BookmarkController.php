@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Bookmark;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -95,9 +96,16 @@ class BookmarkController extends Controller
             return response()->json(['message' => "The user hasn't saved anything yet!"], 404);
         }
 
+        // foreach ($foto->comment as $value) {
+        //             if (!empty($value->user->foto_profil) && !Str::startsWith($value->user->foto_profil, env('APP_URL'))) {
+        //                 $value->user->foto_profil = env('APP_URL') . '/' . $value->user->foto_profil;
+        //             }
+
         $appUrl = env('APP_URL');
         foreach ($bookmarks as $bookmark) {
-            $bookmark->foto->lokasi_file = "{$appUrl}/{$bookmark->foto->lokasi_file}";
+            if (!empty($bookmark->foto->lokasi_file) && !Str::startsWith($bookmark->foto->lokasi_file, env('APP_URL'))) {
+                $bookmark->foto->lokasi_file = "{$appUrl}/{$bookmark->foto->lokasi_file}";
+            }
         }
 
         return response()->json($bookmarks, 200);
