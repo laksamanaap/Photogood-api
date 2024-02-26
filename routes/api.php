@@ -52,7 +52,11 @@ Route::get('search-album', [SearchController::class, 'searchAlbum'])->name('sear
 Route::middleware(UserMiddleware::class)->group(
     function(){
 
-        // Download Photo - Ongoing - Medium
+        // Download Photo Routes
+        // v1 - v2 : Website
+        // v3 - v4 : Mobile
+
+        // Download Photo - ok
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
 
         // Subscribe - (Midtrans) - ok
@@ -109,6 +113,9 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/leave-room', [RoomDiscussController::class, 'leaveRoom'])->name('leaveRoom');
         Route::get('v1/show-room-member', [RoomDiscussController::class, 'showMemberRoom'])->name('showMemberRoom');
         
+        // Mobile
+        Route::post('v3/download-photo/{foto_id}', [DownloadController::class, 'mobileGuestDownloadPhoto'])->name('mobileGuestDownloadPhoto');
+
     }
 );
 
@@ -131,6 +138,12 @@ Route::middleware(MemberMiddleware::class)->group(
         Route::post('v2/store-member-photo', [PhotoMemberController::class, 'memberStorePhoto'])->name('memberStorePhoto');
         Route::post('v2/update-member-photo', [PhotoMemberController::class, 'memberUpdatePhoto'])->name('memberUpdatePhoto');
         Route::delete('v2/delete-member-photo', [PhotoMemberController::class, 'memberDeletePhoto'])->name('memberDeletePhoto');
+
+        // Download Photo
+        Route::post('v2/download-photo/{foto_id}', [DownloadController::class, 'memberDownloadPhoto'])->name('memberDownloadPhoto');
+
+        // Mobile
+        Route::post('v4/download-photo/{foto_id}', [DownloadController::class, 'mobileMemberDownloadPhoto'])->name('mobileMemberDownloadPhoto');
     }
 );
 
@@ -144,9 +157,9 @@ Route::middleware(AdminMiddleware::class)->group(
         Route::post('v3/update-photo-active', [AdminController::class, 'changePhotoActive'])->name('changePhotoActive');
         Route::post('v3/update-photo-deactive', [AdminController::class, 'changePhotoDeactive'])->name('changePhotoDeactive');
         
-        // Dashboard
+        // Dashboard - (Add income detail)
         
-        // Income Detail
+        // Manage Photo To Activate or not
 
         // Manage Room Discuss
 

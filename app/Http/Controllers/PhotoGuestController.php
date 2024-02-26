@@ -138,7 +138,7 @@ class PhotoGuestController extends Controller
         $foto = Foto::with('user', 'member.user','comment.user','download','like', 'kategori')->find($fotoID);
 
         if (!$foto) {
-            return response()->json(['message' => "Cannot find data foto_id $fotoID"]);
+            return response()->json(['message' => "Cannot find data foto_id $fotoID"], 404);
         }
 
         $appUrl = env('APP_URL');
@@ -187,7 +187,7 @@ class PhotoGuestController extends Controller
         ->get();
 
         if (!$foto) {
-            return response()->json(['message' => 'Not photo found!']);
+            return response()->json(['message' => 'Not photo found!'], 404);
         }
 
         $appUrl = env('APP_URL');
