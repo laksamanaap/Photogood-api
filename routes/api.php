@@ -86,7 +86,7 @@ Route::middleware(UserMiddleware::class)->group(
         // Photos - ok (Encrypted but still bug)
         Route::post('v1/store-guest-photo', [PhotoGuestController::class, 'guestStorePhoto'])->name('guestStorePhoto');
         Route::post('v1/update-guest-photo', [PhotoGuestController::class, 'guestUpdatePhoto'])->name('guestUpdatePhoto');
-        Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');
+        Route::delete('v1/delete-guest-photo', [PhotoGuestController::class, 'guestDeletePhoto'])->name('guestDeletePhoto');        
 
         // Get user post
         Route::get('v1/show-user-post', [PhotoGuestController::class, 'showUserPost'])->name('showUserPost');
@@ -145,7 +145,7 @@ Route::middleware(AdminMiddleware::class)->group(
         Route::post('v3/update-photo-deactive', [AdminController::class, 'changePhotoDeactive'])->name('changePhotoDeactive');
         
         // Dashboard
-
+        
         // Income Detail
 
         // Manage Room Discuss

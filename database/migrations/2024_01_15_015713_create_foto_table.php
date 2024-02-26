@@ -24,9 +24,10 @@ return new class extends Migration
             $table->unsignedBigInteger('kategori_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('user_id')->on('users');
-            $table->foreign('member_id')->references('member_id')->on('member');
-            $table->foreign('kategori_id')->references('kategori_id')->on('kategori_foto');
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->foreign('member_id')->references('member_id')->on('member')->onDelete('cascade');
+            $table->foreign('kategori_id')->references('kategori_id')->on('kategori_foto')->onDelete('cascade');
+
         });
     }
 

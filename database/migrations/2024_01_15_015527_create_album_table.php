@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('deskripsi_album');
             $table->timestamps();
             
-            $table->foreign('user_id')->references('user_id')->on('users');
-            $table->foreign('member_id')->references('member_id')->on('member');
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');;
+            $table->foreign('member_id')->references('member_id')->on('member')->onDelete('cascade');;
         });
     }
 

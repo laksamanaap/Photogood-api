@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('checkout_link');
             $table->timestamps();
             
-            $table->foreign('user_id')->references('user_id')->on('users');
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');;
         });
     }
 
