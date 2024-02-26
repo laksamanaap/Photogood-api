@@ -13,7 +13,7 @@ class AdminController extends Controller
     public function getAllUser(Request $request)
     {
 
-        $user = User::all();
+        $user = User::where('status', 2)->get();
 
         if (!$user) {
             return response()->json(['message' => 'No user found!']);
