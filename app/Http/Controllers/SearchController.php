@@ -7,6 +7,7 @@ use App\Models\Like;
 use App\Models\User;
 use App\Models\Album;
 use App\Models\Download;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -92,7 +93,9 @@ class SearchController extends Controller
 
                 $appUrl = env('APP_URL');
                 foreach ($response['Like History'] as $likeItem) {
-                    $likeItem->foto->lokasi_file = "{$appUrl}/{$likeItem->foto->lokasi_file}";
+                    if (!empty($likeItem->foto->lokasi_file) && !Str::startsWith($likeItem->foto->lokasi_file, env('APP_URL'))) {
+                        $likeItem->foto->lokasi_file = "{$appUrl}/{$likeItem->foto->lokasi_file}";
+                    }
                 }
             } else {
                 $response['Like History'] = ['message' => 'Like history not found for current user'];
@@ -108,8 +111,15 @@ class SearchController extends Controller
                 $response['Download History'] = $downloadHistory;
 
                 $appUrl = env('APP_URL');
+                // foreach ($response['Like History'] as $likeItem) {
+                //     if (!empty($likeItem->foto->lokasi_file) && !Str::startsWith($likeItem->foto->lokasi_file, env('APP_URL'))) {
+                //         $likeItem->foto->lokasi_file = "{$appUrl}/{$likeItem->foto->lokasi_file}";
+                //     }
+                // }
                 foreach ($response['Download History'] as $downloadItem) {
-                    $downloadItem->foto->lokasi_file = "{$appUrl}/{$downloadItem->foto->lokasi_file}";
+                    if (!empty($downloadItem->foto->lokasi_file) && !Str::startsWith($downloadItem->foto->lokasi_file, env('APP_URL'))) {
+                      $downloadItem->foto->lokasi_file = "{$appUrl}/{$downloadItem->foto->lokasi_file}";
+                    }
                 }
             } else {
                 $response['Download History'] = ['message' => 'Download history not found for current user'];

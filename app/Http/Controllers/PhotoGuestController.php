@@ -142,7 +142,6 @@ class PhotoGuestController extends Controller
         }
 
         $appUrl = env('APP_URL');
-
           foreach ($foto->comment as $value) {
             if (!empty($value->user->foto_profil) && !Str::startsWith($value->user->foto_profil, env('APP_URL'))) {
                 $value->user->foto_profil = env('APP_URL') . '/' . $value->user->foto_profil;
