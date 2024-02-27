@@ -12,5 +12,10 @@ class Download extends Model
     protected $primaryKey = 'download_id';
     protected $guarded = [];
 
+    public function foto()
+    {
+        return $this->belongsTo(Foto::class, 'foto_id');
+    }
+
     use HasFactory;
 }

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Foto;
+use App\Models\User;
 use App\Models\Download;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -135,5 +137,31 @@ class DownloadController extends Controller
 
         return response()->json($download,200);
     }
+
+    public function showUserDownload(Request $request)
+    {
+        $loginToken = $request->input('token');
+        $user = User::where('login_tokens', $loginToken)->with('member')->first();
+        $userID = $user->user_id;
+
+        $download = Download::where('user_id', $userID)
+            ->with('foto')
+            ->get();
+
+        if (!$download) {
+            return response()->json(['message' => 'No like found!'], 404);
+        }
+
+        $appUrl = env('APP_URL');
+          foreach ($download as $item) {
+            $foto = $item->foto;
+            if (!Str::startsWith($foto->lokasi_file, $appUrl)) {
+                $foto->lokasi_file = $appUrl . '/' . $foto->lokasi_file;
+            }
+        }
+
+        return response()->json($download, 200);
+    }
+
 
 }

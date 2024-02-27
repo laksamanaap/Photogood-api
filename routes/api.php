@@ -96,6 +96,15 @@ Route::middleware(UserMiddleware::class)->group(
         Route::get('v1/show-user-post', [PhotoGuestController::class, 'showUserPost'])->name('showUserPost');
         Route::get('v1/show-user-post/{user_id}', [PhotoGuestController::class, 'showUserPostByID'])->name('showUserPostByID');
         
+        // Get user like
+        Route::get('v1/show-user-like', [LikeController::class, 'showUserLike'])->name('showUserLike');
+
+        // Get user download
+        Route::get('v1/show-user-download', [DownloadController::class, 'showUserDownload'])->name('showUserDownload');
+
+        // Get user status as member
+        // Route::get('v1/show-user-asMember', [AuthController::class, 'showUserAsMember'])->name('showUserAsMember');
+
         // Discuss - ok
         Route::post('v1/create-room', [RoomDiscussController::class, 'createRoom'])->name('createRoom');
         Route::post('v1/update-room', [RoomDiscussController::class, 'updateRoom'])->name('updateRoom');

@@ -369,5 +369,18 @@ public function loginUsers(Request $request)
         ]);
     }
 
+    // public function showUserAsMember(Request $request) {
+    //     $loginToken = $request->input("token");
+    //     $user = User::where('login_tokens', $loginToken)->with('member')->first();
+        
+    //     $membershipStatus = false;
+    //     if ($user->member !== null && $user->member->exists()) {
+    //         $memberID = $user->member->member_id;
+    //         $membershipStatus = true; 
+    //     }
+
+    //     return response()->json(['membership' => $membershipStatus], 200);
+    // }
+
     
 }

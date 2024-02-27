@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Foto;
 use App\Models\Like;
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -62,4 +64,30 @@ class LikeController extends Controller
         return response($foto,200);
 
     }
+
+   public function showUserLike(Request $request)
+    {
+        $loginToken = $request->input('token');
+        $user = User::where('login_tokens', $loginToken)->with('member')->first();
+        $userID = $user->user_id;
+
+        $like = Like::where('user_id', $userID)
+            ->with('foto')
+            ->get();
+
+        if (!$like) {
+            return response()->json(['message' => 'No like found!'], 404);
+        }
+
+        $appUrl = env('APP_URL');
+          foreach ($like as $item) {
+            $foto = $item->foto;
+            if (!Str::startsWith($foto->lokasi_file, $appUrl)) {
+                $foto->lokasi_file = $appUrl . '/' . $foto->lokasi_file;
+            }
+    }
+
+        return response()->json($like, 200);
+    }
+
 }
