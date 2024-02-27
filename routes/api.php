@@ -48,6 +48,8 @@ Route::get('/get-all-vector', [PhotoGuestController::class, 'showAllVector'])->n
 
 Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
 Route::get('search-album', [SearchController::class, 'searchAlbum'])->name('searchAlbum');
+Route::get('search-history', [SearchController::class, 'searchHistory'])->name('searchHistory');
+
 
 Route::middleware(UserMiddleware::class)->group(
     function(){

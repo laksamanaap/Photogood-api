@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Foto;
+use App\Models\Like;
+use App\Models\User;
 use App\Models\Album;
+use App\Models\Download;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SearchController extends Controller
@@ -40,26 +44,78 @@ class SearchController extends Controller
     public function searchAlbum(Request $request) {
     $namaAlbum = $request->query('nama_album');
 
-    if ($namaAlbum) {
-        $albums = Album::with('bookmark_fotos.foto')->when($namaAlbum, function ($query) use ($namaAlbum) {
-            return $query->where('nama_album', 'like', '%' . $namaAlbum . '%');
-        })->get();
+        if ($namaAlbum) {
+            $albums = Album::with('bookmark_fotos.foto')->when($namaAlbum, function ($query) use ($namaAlbum) {
+                return $query->where('nama_album', 'like', '%' . $namaAlbum . '%');
+            })->get();
 
-        if ($albums->isNotEmpty()) {
-            $appUrl = env('APP_URL');
-            foreach ($albums as $album) {
-                $totalBookmark = count($album->bookmark_fotos);
-                $album->total_bookmark_data = $totalBookmark;
-                foreach ($album->bookmark_fotos as $bookmark) {
-                    $bookmark->foto->lokasi_file = $appUrl . '/' . $bookmark->foto->lokasi_file;
+            if ($albums->isNotEmpty()) {
+                $appUrl = env('APP_URL');
+                foreach ($albums as $album) {
+                    $totalBookmark = count($album->bookmark_fotos);
+                    $album->total_bookmark_data = $totalBookmark;
+                    foreach ($album->bookmark_fotos as $bookmark) {
+                        $bookmark->foto->lokasi_file = $appUrl . '/' . $bookmark->foto->lokasi_file;
+                    }
                 }
+                return response()->json($albums, 200);
+            } else {
+                return response()->json(['message' => 'Album not found'], 404);
             }
-            return response()->json($albums, 200);
         } else {
-            return response()->json(['message' => 'Album not found'], 404);
+            return response()->json(['message' => 'Query not found!'], 404);
         }
-    } else {
+    }
+
+    public function searchHistory(Request $request)
+    {
+        $loginToken = $request->input('token');
+
+        if (!$loginToken) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $user = User::where('login_tokens', $loginToken)->with('member')->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $like = $request->query('like_foto');
+        $download = $request->query('download_foto');
+
+        $response = [];
+
+        if ($like) {
+            $likeHistory = Like::with('foto')->whereHas('foto', function ($query) use ($like) {
+                $query->where('judul_foto', 'like', '%' . $like . '%');
+            })->where('user_id', $user->user_id)->get();
+
+            if ($likeHistory->isNotEmpty()) {
+                $response['Like History'] = $likeHistory;
+            } else {
+                $response['Like History'] = ['message' => 'Like history not found for current user'];
+            }
+        }
+
+        if ($download) {
+            $downloadHistory = Download::with('foto')->whereHas('foto', function ($query) use ($download) {
+                $query->where('judul_foto', 'like', '%' . $download . '%');
+            })->where('user_id', $user->user_id)->get();
+
+            if ($downloadHistory->isNotEmpty()) {
+                $response['Download History'] = $downloadHistory;
+            } else {
+                $response['Download History'] = ['message' => 'Download history not found for current user'];
+            }
+        }
+
+        if (!empty($response)) {
+            return response()->json($response, 200);
+        }
+
         return response()->json(['message' => 'Query not found!'], 404);
     }
-}
+
+
 }
