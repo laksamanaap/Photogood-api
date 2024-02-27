@@ -71,10 +71,6 @@ class SearchController extends Controller
     {
         $loginToken = $request->input('token');
 
-        if (!$loginToken) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
         $user = User::where('login_tokens', $loginToken)->with('member')->first();
 
         if (!$user) {
@@ -93,6 +89,11 @@ class SearchController extends Controller
 
             if ($likeHistory->isNotEmpty()) {
                 $response['Like History'] = $likeHistory;
+
+                $appUrl = env('APP_URL');
+                foreach ($response['Like History'] as $likeItem) {
+                    $likeItem->foto->lokasi_file = "{$appUrl}/{$likeItem->foto->lokasi_file}";
+                }
             } else {
                 $response['Like History'] = ['message' => 'Like history not found for current user'];
             }
@@ -105,6 +106,11 @@ class SearchController extends Controller
 
             if ($downloadHistory->isNotEmpty()) {
                 $response['Download History'] = $downloadHistory;
+
+                $appUrl = env('APP_URL');
+                foreach ($response['Download History'] as $downloadItem) {
+                    $downloadItem->foto->lokasi_file = "{$appUrl}/{$downloadItem->foto->lokasi_file}";
+                }
             } else {
                 $response['Download History'] = ['message' => 'Download history not found for current user'];
             }
