@@ -23,7 +23,7 @@ class RoomDiscussController extends Controller
             return response()->json([$validator->errors()],422);
         }
 
-        $uploadFolders = 'foto';
+        $uploadFolders = 'foto_profil_room';
         $image = $request->file('profil_ruang');
         $imagePath = $image->store($uploadFolders, 'public');
 
@@ -90,13 +90,20 @@ class RoomDiscussController extends Controller
 
     public function showAllRoom(Request $request) 
     {
-        $room = RuangDiskusi::all();
+        $rooms = RuangDiskusi::all();
 
-        if (!$room) {
+        $appUrl = env('APP_URL');
+        foreach ($rooms as $room ) {
+            if (!empty($room->profil_ruang) && !Str::startsWith($room->profil_ruang, $appUrl)) {
+                $room->profil_ruang = $appUrl . '/' . $room->profil_ruang;
+            }
+        }
+
+        if (!$rooms) {
             return response()->json(['message' => 'No room found!'],404);
         }
 
-        return response()->json($room,200);
+        return response()->json($rooms,200);
 
     }
 
