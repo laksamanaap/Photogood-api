@@ -120,10 +120,18 @@ class RoomDiscussController extends Controller
 
         $ruang_id = $request->input('ruang_id');
 
-        $room = RuangDiskusi::with(['member.user','messages.user'])->where('ruang_id', $ruang_id)->first();
+        $room = RuangDiskusi::with(['member.user', 'messages.user'])->where('ruang_id', $ruang_id)->first();
 
         if (!$room) {
             return response()->json(['message' => 'Room not found!'],404);
+        }
+
+        $appUrl = env('APP_URL');
+        foreach ($room->messages as $message) {
+            $messageUser = $message->user;
+            if (!empty($messageUser->foto_profil) && !Str::startsWith($messageUser->foto_profil, $appUrl)) {
+                $messageUser->foto_profil = $appUrl . '/' . $messageUser->foto_profil;
+            }
         }
 
         return response()->json($room, 200);
@@ -207,8 +215,20 @@ class RoomDiscussController extends Controller
             return response()->json(['message' => 'Room not found!'],404);
         }
 
-        return response()->json($room, 200);
+        $appUrl = env('APP_URL');
 
+        if (!empty($room->profil_ruang) && !Str::startsWith($room->profil_ruang, $appUrl)) {
+            $room->profil_ruang = $appUrl . '/' . $room->profil_ruang;
+        }
+
+        foreach ($room->member as $member) {
+            $memberUser = $member->user;
+            if (!empty($memberUser->foto_profil) && !Str::startsWith($memberUser->foto_profil, $appUrl)) {
+                $memberUser->foto_profil = $appUrl . '/' . $memberUser->foto_profil;
+            }
+        }
+
+        return response()->json($room, 200);
     }
 
    
