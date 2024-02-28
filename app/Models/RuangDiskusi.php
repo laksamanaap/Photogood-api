@@ -23,5 +23,10 @@ class RuangDiskusi extends Model
         return $this->hasMany(AnggotaDiskusi::class,'ruang_id');
     }
 
+     public function lastMessage()
+    {
+        return $this->hasOne(PesanDiskusi::class, 'ruang_id')->latest();
+    }
+
     use HasFactory;
 }

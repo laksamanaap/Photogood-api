@@ -90,7 +90,7 @@ class RoomDiscussController extends Controller
 
     public function showAllRoom(Request $request) 
     {
-        $rooms = RuangDiskusi::all();
+        $rooms = RuangDiskusi::with(['lastMessage.user'])->get();
 
         $appUrl = env('APP_URL');
         foreach ($rooms as $room ) {
@@ -104,7 +104,6 @@ class RoomDiscussController extends Controller
         }
 
         return response()->json($rooms,200);
-
     }
 
 

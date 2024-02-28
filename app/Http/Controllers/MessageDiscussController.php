@@ -162,17 +162,17 @@ class MessageDiscussController extends Controller
         $commentWord = explode(' ', $komentar);
         
         // Filter Badword To Star
-        // $cleanWord = array_map(function ($word) use ($badWord) {
-        //     if (in_array(strtolower($word), $badWord)) {
-        //         $word = str_repeat('*', strlen($word));
-        //     }
-        //     return $word;
-        // }, $commentWord);
+        $cleanWord = array_map(function ($word) use ($badWord) {
+            if (in_array(strtolower($word), $badWord)) {
+                $word = str_repeat('*', strlen($word));
+            }
+            return $word;
+        }, $commentWord);
 
         // Filter Badword (Remove it)
-        $cleanWord = array_filter($commentWord, function ($word) use ($badWord) {
-            return !in_array(strtolower($word), $badWord);
-        });
+        // $cleanWord = array_filter($commentWord, function ($word) use ($badWord) {
+        //     return !in_array(strtolower($word), $badWord);
+        // });
 
         $cleanComentar = implode(' ', $cleanWord);
 
