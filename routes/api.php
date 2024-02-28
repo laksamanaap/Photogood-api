@@ -109,6 +109,7 @@ Route::middleware(UserMiddleware::class)->group(
 
         // Discuss - ok
         Route::post('v1/create-room', [RoomDiscussController::class, 'createRoom'])->name('createRoom');
+        // Route::post('v1/store-room-profile', [RoomDiscussController::class, 'storeRoomProfile'])->name('storeRoomProfile');
         Route::post('v1/update-room', [RoomDiscussController::class, 'updateRoom'])->name('updateRoom');
         Route::delete('v1/delete-room', [RoomDiscussController::class, 'deleteRoom'])->name('deleteRoom');
         Route::get('v1/show-all-room', [RoomDiscussController::class, 'showAllRoom'])->name('showAllRoom');

@@ -16,17 +16,22 @@ class RoomDiscussController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_ruang' => 'required|string',
             'deskripsi_ruang' => 'required|string',
+            'profil_ruang' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         if ($validator->fails()) {
             return response()->json([$validator->errors()],422);
         }
 
+        $uploadFolders = 'foto';
+        $image = $request->file('profil_ruang');
+        $imagePath = $image->store($uploadFolders, 'public');
+
         $room = RuangDiskusi::create([
             'ruang_id' => Str::uuid()->toString(), 
             'nama_ruang' => $request->input('nama_ruang'),
             'deskripsi_ruang' => $request->input('deskripsi_ruang'),
-            'profil_ruang' => $request->input('profil_ruang'),
+            'profil_ruang' => "storage/" . $imagePath,
         ]);
 
         return response()->json($room,200);
@@ -198,6 +203,8 @@ class RoomDiscussController extends Controller
         return response()->json($room, 200);
 
     }
+
+   
 
 
 }

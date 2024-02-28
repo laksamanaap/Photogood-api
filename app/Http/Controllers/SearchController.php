@@ -111,11 +111,7 @@ class SearchController extends Controller
                 $response['Download History'] = $downloadHistory;
 
                 $appUrl = env('APP_URL');
-                // foreach ($response['Like History'] as $likeItem) {
-                //     if (!empty($likeItem->foto->lokasi_file) && !Str::startsWith($likeItem->foto->lokasi_file, env('APP_URL'))) {
-                //         $likeItem->foto->lokasi_file = "{$appUrl}/{$likeItem->foto->lokasi_file}";
-                //     }
-                // }
+            
                 foreach ($response['Download History'] as $downloadItem) {
                     if (!empty($downloadItem->foto->lokasi_file) && !Str::startsWith($downloadItem->foto->lokasi_file, env('APP_URL'))) {
                       $downloadItem->foto->lokasi_file = "{$appUrl}/{$downloadItem->foto->lokasi_file}";
