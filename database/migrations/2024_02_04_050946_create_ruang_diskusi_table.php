@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('ruang_id')->primary();
             $table->string('nama_ruang');
             $table->string('deskripsi_ruang');
+            $table->string('user_id');
             $table->string('profil_ruang')->nullable();
             $table->timestamps();
         });

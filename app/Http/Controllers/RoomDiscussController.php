@@ -16,6 +16,7 @@ class RoomDiscussController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_ruang' => 'required|string',
             'deskripsi_ruang' => 'required|string',
+            'user_id' => 'required|string',
             'profil_ruang' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
@@ -31,6 +32,7 @@ class RoomDiscussController extends Controller
             'ruang_id' => Str::uuid()->toString(), 
             'nama_ruang' => $request->input('nama_ruang'),
             'deskripsi_ruang' => $request->input('deskripsi_ruang'),
+            'user_id' => $request->input('user_id'),
             'profil_ruang' => "storage/" . $imagePath,
         ]);
 
@@ -90,7 +92,7 @@ class RoomDiscussController extends Controller
 
     public function showAllRoom(Request $request) 
     {
-        $rooms = RuangDiskusi::with(['lastMessage.user'])->get();
+        $rooms = RuangDiskusi::with(['lastMessage.user', 'owner'])->get();
 
         $appUrl = env('APP_URL');
         foreach ($rooms as $room ) {
@@ -119,7 +121,7 @@ class RoomDiscussController extends Controller
 
         $ruang_id = $request->input('ruang_id');
 
-        $room = RuangDiskusi::with(['member.user', 'messages.user'])->where('ruang_id', $ruang_id)->first();
+        $room = RuangDiskusi::with(['member.user', 'messages.user', 'owner'])->where('ruang_id', $ruang_id)->first();
 
         if (!$room) {
             return response()->json(['message' => 'Room not found!'],404);
