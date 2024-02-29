@@ -61,7 +61,7 @@ Route::middleware(UserMiddleware::class)->group(
         // Download Photo - ok
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
 
-        // Subscribe - (Midtrans) - ok
+        // Subscribe - (Midtrans) - need improve from admin
         Route::post('v1/store-midtrans-payment', [PaymentController::class, 'createMidtransPayment'])->name('createMidtransPayment');
         Route::post('v1/store-qris-payment', [PaymentController::class, 'createQRISPayment'])->name('createQRISPayment');
         
@@ -162,32 +162,37 @@ Route::middleware(MemberMiddleware::class)->group(
 Route::middleware(AdminMiddleware::class)->group(
     function(){
         // Ok
-        Route::get('v3/get-all-user', [AdminController::class, 'getAllUser'])->name('getAllUser');
-        Route::get('v3/get-all-member', [AdminController::class, 'getAllMember'])->name('getAllMember');
-
-        // Ok
         Route::post('v3/update-photo-active', [AdminController::class, 'changePhotoActive'])->name('changePhotoActive');
         Route::post('v3/update-photo-deactive', [AdminController::class, 'changePhotoDeactive'])->name('changePhotoDeactive');
         
         // Dashboard - (Add income detail)
 
-        // Manage Room Discuss
+        // Midtrans acc payment
 
-        // Manage Album
-        Route::get('v3/show-album', [AdminController::class, 'showMemberAlbum'] )->name('showMemberAlbum');
-        Route::get('v3/show-detail-album/{album_id}', [AdminController::class, 'showDetailMemberAlbum'] )->name('showDetailMemberAlbum');
-        Route::post('v3/store-album', [AdminController::class, 'memberStoreAlbum'])->name('memberStoreAlbum');
-        Route::post('v3/update-album', [AdminController::class, 'memberUpdateAlbum'])->name('memberUpdateAlbum');
-        Route::delete('v3/delete-album', [AdminController::class, 'memberDeleteAlbum'])->name('memberDeleteAlbum');
+        // Pagination (Optional)
+        
+        // Manage Room Discuss
+        Route::get('v3/show-all-room', [AdminController::class, 'showAllRoom'])->name('showAllRoom');
+        Route::post('v3/create-room', [AdminController::class, 'createRoom'])->name('createRoom');
+        // Need Improve
+        Route::post('v3/update-room', [AdminController::class, 'updateRoom'])->name('updateRoom');
+        Route::delete('v3/delete-room', [AdminController::class, 'deleteRoom'])->name('deleteRoom');
 
         // Manage User
+        Route::get('v3/get-all-user', [AdminController::class, 'getAllUser'])->name('getAllUser');
         Route::get('v3/show-user-detail/{user_id}', [AdminController::class, 'showUserDetail'])->name('showUserDetail');
         Route::post('v3/suspend-user/{user_id}', [AdminController::class, 'suspendUser'])->name('suspendUser');
         Route::post('v3/activate-user/{user_id}', [AdminController::class, 'activateUser'])->name('activateUser');
 
         // Manage Member
-
-        // Pagination (Optional)
+        Route::get('v3/get-all-member', [AdminController::class, 'getAllMember'])->name('getAllMember');
+        Route::get('v3/show-member-detail/{user_id}', [AdminController::class, 'showMemberDetail'])->name('showMemberDetail');
+        Route::post('v3/activate-member/{user_id}', [AdminController::class, 'activateMember'])->name('activateMember');
+        
+        // Search
+        Route::get('v3/search-room-discuss', [AdminController::class, 'searchRoomDiscuss'])->name('searchRoomDiscuss');
+        Route::get('v3/search-user', [AdminController::class, 'searchUser'])->name('searchUser');
+        Route::get('v3/search-member', [AdminController::class, 'searchMember'])->name('searchMember');
 
     }
 );

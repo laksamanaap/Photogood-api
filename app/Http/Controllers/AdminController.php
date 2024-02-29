@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Foto;
 use App\Models\User;
 use App\Models\Member;
+use Illuminate\Support\Str;
+use App\Models\RuangDiskusi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,18 +28,6 @@ class AdminController extends Controller
         }
 
         return response()->json($user,200);
-
-    }
-
-     public function getAllMember(Request $request)
-    {
-
-        $member = User::where('status', 2)->get();
-        if (!$member) {
-            return response()->json(['message' => 'No user found!']);
-        }
-
-        return response()->json($member,200);
 
     }
 
@@ -135,11 +125,222 @@ class AdminController extends Controller
     }
 
     // Member
-    
-    // Album
-    
+    public function getAllMember(Request $request)
+    {
 
+        $member = User::where('status', 2)->get();
+        if (!$member) {
+            return response()->json(['message' => 'No user found!']);
+        }
 
+        return response()->json($member,200);
+    }
 
+    public function showMemberDetail(Request $request, $userID)
+    {
+
+        $user = User::where('user_id', $userID)
+        ->where('status',2)
+        ->with('member')
+        ->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Member not found!'], 404);
+        }
+
+        $appUrl = env('APP_URL');
+        if ($user->foto_profil != null) {
+            $user->foto_profil = "{$appUrl}/{$user->foto_profil}";
+        }
+
+        return response()->json($user, 200);
+    }
+
+    public function activateMember(Request $request, $userID)
+    {
+        $user = User::where('user_id', $userID)->with('member')->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found!'], 404);
+        }
+
+        $user->update(['status' => 2]);
+
+        return response()->json(['message' => "User (Member) id $userID status updated to active "]);
+    }
+
+    // Room Discuss
+    public function showAllRoom(Request $request) 
+    {
+        $rooms = RuangDiskusi::with(['owner'])->get();
+
+        $appUrl = env('APP_URL');
+        foreach ($rooms as $room ) {
+            if (!empty($room->profil_ruang) && !Str::startsWith($room->profil_ruang, $appUrl)) {
+                $room->profil_ruang = $appUrl . '/' . $room->profil_ruang;
+            }
+        }
+
+        if (!$rooms) {
+            return response()->json(['message' => 'No room found!'],404);
+        }
+
+        return response()->json($rooms,200);
+    }
+
+    public function createRoom(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_ruang' => 'required|string',
+            'deskripsi_ruang' => 'required|string',
+            'user_id' => 'required|string',
+            'profil_ruang' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()],422);
+        }
+
+        $uploadFolders = 'foto_profil_room';
+        $image = $request->file('profil_ruang');
+        $imagePath = $image->store($uploadFolders, 'public');
+
+        $room = RuangDiskusi::create([
+            'ruang_id' => Str::uuid()->toString(), 
+            'nama_ruang' => $request->input('nama_ruang'),
+            'deskripsi_ruang' => $request->input('deskripsi_ruang'),
+            'user_id' => $request->input('user_id'),
+            'profil_ruang' => "storage/" . $imagePath,
+        ]);
+
+        return response()->json($room,200);
+    }
+
+    public function updateRoom(Request $request) // Need Improve
+    {
+        $validator = Validator::make($request->all(), [
+            'ruang_id' => 'required|string', 
+            'nama_ruang' => 'required|string',
+            'deskripsi_ruang' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
+
+        $ruang_id = $request->input('ruang_id');
+
+        $room = RuangDiskusi::where('ruang_id', $ruang_id)->first();
+
+        if (!$room) {
+            return response()->json(['message' => 'Room not found!'], 404);
+        }
+
+        $room->nama_ruang = $request->input('nama_ruang');
+        $room->deskripsi_ruang = $request->input('deskripsi_ruang');
+        $room->profil_ruang = $request->input('profil_ruang');
+        $room->save();
+
+        return response()->json($room, 200);
+    }
+
+    public function deleteRoom(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ruang_id' => 'required|string', 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
+
+        $ruang_id = $request->input('ruang_id');
+
+        $room = RuangDiskusi::where('ruang_id', $ruang_id)->first();
+
+        if (!$room) {
+            return response()->json(['message' => 'Room not found!'], 404);
+        }
+
+        $room->delete();
+
+        return response()->json(['message' => 'Room succesfully deleted!'], 200);
+    }
+
+    // Search
+    public function searchUser(Request $request)
+    {
+        $username = $request->query('username');
+        $nama_lengkap = $request->query('nama_lengkap');
+
+        $users = User::query()->where('status', 1);
+
+        if ($username || $nama_lengkap) {
+            $users->where(function ($query) use ($username, $nama_lengkap) {
+                $query->where('username', 'LIKE', '%' . $username . '%')
+                    ->orWhere('nama_lengkap', 'LIKE', '%' . $nama_lengkap . '%');
+            });
+        }
+
+        $result = $users->get();
+        
+        if ($result->isNotEmpty()) {
+            return response()->json($result, 200);
+        } else {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+    }
+
+    public function searchMember(Request $request)
+    {
+        $username = $request->query('username');
+        $nama_lengkap = $request->query('nama_lengkap');
+
+        $members = User::query()->where('status', 2);
+
+        if ($username || $nama_lengkap) {
+            $members->where(function ($query) use ($username, $nama_lengkap) {
+                $query->where('username', 'LIKE', '%' . $username . '%')
+                    ->orWhere('nama_lengkap', 'LIKE', '%' . $nama_lengkap . '%');
+            });
+        }
+
+        $result = $members->get();
+
+        if ($result->isNotEmpty()) {
+            return response()->json($result, 200);
+        } else {
+            return response()->json(['message' => 'Member not found'], 404);
+        }
+
+    }
+
+    public function searchRoomDiscuss(Request $request)
+    {
+        $nama_ruang = $request->query('nama_ruang');
+        $deskripsi_ruang = $request->query('deskripsi_ruang');
+
+        $rooms = RuangDiskusi::query();
+
+        if ($nama_ruang) {
+            $rooms->where(function ($query) use ($nama_ruang) {
+                $query->where('nama_ruang', 'LIKE', '%' . $nama_ruang . '%');
+            });
+        }
+
+        $result = $rooms->get();
+
+        if ($result->isNotEmpty()) {
+            return response()->json($result, 200);
+        } else {
+            return response()->json(['message' => 'Room not found'], 404);
+        }
+    }
+
+    // Dashboard
+
+    // Midtrans acc payment
+
+    // Pagination
 
 }
