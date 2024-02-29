@@ -170,16 +170,24 @@ Route::middleware(AdminMiddleware::class)->group(
         Route::post('v3/update-photo-deactive', [AdminController::class, 'changePhotoDeactive'])->name('changePhotoDeactive');
         
         // Dashboard - (Add income detail)
-        
-        // Manage Photo To Activate or not
 
         // Manage Room Discuss
 
         // Manage Album
+        Route::get('v3/show-album', [AdminController::class, 'showMemberAlbum'] )->name('showMemberAlbum');
+        Route::get('v3/show-detail-album/{album_id}', [AdminController::class, 'showDetailMemberAlbum'] )->name('showDetailMemberAlbum');
+        Route::post('v3/store-album', [AdminController::class, 'memberStoreAlbum'])->name('memberStoreAlbum');
+        Route::post('v3/update-album', [AdminController::class, 'memberUpdateAlbum'])->name('memberUpdateAlbum');
+        Route::delete('v3/delete-album', [AdminController::class, 'memberDeleteAlbum'])->name('memberDeleteAlbum');
 
         // Manage User
+        Route::get('v3/show-user-detail/{user_id}', [AdminController::class, 'showUserDetail'])->name('showUserDetail');
+        Route::post('v3/suspend-user/{user_id}', [AdminController::class, 'suspendUser'])->name('suspendUser');
+        Route::post('v3/activate-user/{user_id}', [AdminController::class, 'activateUser'])->name('activateUser');
 
         // Manage Member
+
+        // Pagination (Optional)
 
     }
 );
