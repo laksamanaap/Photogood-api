@@ -111,15 +111,19 @@ class RoomDiscussController extends Controller
 
     public function showAllRoomMessages(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'ruang_id' => 'required|string', 
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'ruang_id' => 'required|string', 
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json([$validator->errors()], 422);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json([$validator->errors()], 422);
+        // }
 
         $ruang_id = $request->input('ruang_id');
+
+        if (!$ruang_id) {
+            return response()->json(['message'=> 'Ruang id is required'],404);
+        }
 
         $room = RuangDiskusi::with(['member.user', 'messages.user', 'owner'])->where('ruang_id', $ruang_id)->first();
 
@@ -128,6 +132,9 @@ class RoomDiscussController extends Controller
         }
 
         $appUrl = env('APP_URL');
+        if (!empty($room->profil_ruang) && !Str::startsWith($room->profil_ruang, $appUrl)) {
+            $room->profil_ruang = $appUrl . '/' . $room->profil_ruang;
+        }
         foreach ($room->messages as $message) {
             $messageUser = $message->user;
             if (!empty($messageUser->foto_profil) && !Str::startsWith($messageUser->foto_profil, $appUrl)) {

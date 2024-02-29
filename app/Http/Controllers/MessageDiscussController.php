@@ -101,6 +101,7 @@ class MessageDiscussController extends Controller
         'ngentit',
         'anjir',
         'dancok',
+        'kontol',
         'kerek',
         'jancuk',
         'ndhasmu',
