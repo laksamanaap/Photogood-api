@@ -8,6 +8,8 @@ use App\Models\Member;
 use Illuminate\Support\Str;
 use App\Models\RuangDiskusi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Models\RiwayatPembayaran;
 use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
@@ -337,7 +339,72 @@ class AdminController extends Controller
         }
     }
 
-    // Dashboard
+  // Dashboard
+  public function getAllStatistic(Request $request)
+    {
+        $totalUsers = User::where('status', 1)->orWhere('status', 2)->count();
+        $totalMembers = User::where('status', 2)->count();
+        $jumlahPembayaran = RiwayatPembayaran::all()->count();
+        $totalPembayaran = $jumlahPembayaran * 30000;
+
+        if ($totalUsers > 0) {
+            $memberPercent = ($totalMembers / $totalUsers) * 100;
+        } else {
+            $memberPercent = 0;
+        }
+
+        return response()->json([
+            'member_percent' => round($memberPercent),
+            'total_pembayaran' => $totalPembayaran,
+            'user_total_data' => $totalUsers,
+            'member_total_data' => $totalMembers,
+            'photo_total_data' => Foto::where('status', 1)->count()
+        ]);
+    }
+
+    // Get Weekly Overview
+    public function getWeeklyOverview(Request $request)
+    {
+        $weekStart = Carbon::now()->startOfWeek(); 
+        $weekEnd = Carbon::now()->endOfWeek(); 
+
+        $weeklyPayments = RiwayatPembayaran::whereBetween('created_at', [$weekStart, $weekEnd])->get();
+        $totalWeeklyPayments = $weeklyPayments->count() * 30000;
+        $totalWeeklyPercents = (RiwayatPembayaran::all()->count() / 7) * 100;
+
+        $dailyPayments = [];
+        $currentDay = clone $weekStart;
+
+        while ($currentDay <= $weekEnd) {
+            $dailyPayments[$currentDay->format('l')] = 0;
+            $currentDay->addDay(); 
+        }
+
+        foreach ($weeklyPayments as $payment) {
+            $day = Carbon::parse($payment->created_at)->format('l');
+            $dailyPayments[$day] += 30000; 
+        }
+
+        return response()->json([
+            'weekly_payments' => $dailyPayments,
+            'total_weekly_payments' => $totalWeeklyPayments,
+            'total_weekly_percents' => round($totalWeeklyPercents)
+        ]);
+    }
+
+   public function getCurrentUserRegistered(Request $request)
+    {
+        $currentUsers = User::latest()->take(8)->get();
+
+        $appUrl = env('APP_URL');
+        foreach ($currentUsers as $currentUser) {
+            if (!empty($currentUser->foto_profil && !Str::startsWith($currentUser->foto_profil, env('APP_URL')))) {
+                $currentUser->foto_profil = $appUrl . '/' . $currentUser->foto_profil;
+            }
+        }
+
+        return response()->json($currentUsers);
+    }
 
     // Midtrans acc payment
 

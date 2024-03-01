@@ -120,6 +120,7 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/update-message', [MessageDiscussController::class, 'updateMessages'])->name('updateMessages');
         Route::delete('v1/delete-message', [MessageDiscussController::class, 'deleteMessages'])->name('deleteMessages');
 
+        
         // Join Room - ok
         Route::post('v1/join-room', [RoomDiscussController::class, 'joinRoom'])->name('joinRoom');
         Route::post('v1/leave-room', [RoomDiscussController::class, 'leaveRoom'])->name('leaveRoom');
@@ -166,7 +167,10 @@ Route::middleware(AdminMiddleware::class)->group(
         Route::post('v3/update-photo-deactive', [AdminController::class, 'changePhotoDeactive'])->name('changePhotoDeactive');
         
         // Dashboard - (Add income detail)
-
+        Route::get('v3/get-all-statistic', [AdminController::class, 'getAllStatistic'])->name('getAllStatistic');
+        Route::get('v3/get-weekly-overview', [AdminController::class, 'getWeeklyOverview'])->name('getWeeklyOverview');
+        Route::get('v3/get-current-user-registered', [AdminController::class, 'getCurrentUserRegistered'])->name('getCurrentUserRegistered');
+        
         // Midtrans acc payment
 
         // Pagination (Optional)
@@ -174,6 +178,7 @@ Route::middleware(AdminMiddleware::class)->group(
         // Manage Room Discuss
         Route::get('v3/show-all-room', [AdminController::class, 'showAllRoom'])->name('showAllRoom');
         Route::post('v3/create-room', [AdminController::class, 'createRoom'])->name('createRoom');
+        
         // Need Improve
         Route::post('v3/update-room', [AdminController::class, 'updateRoom'])->name('updateRoom');
         Route::delete('v3/delete-room', [AdminController::class, 'deleteRoom'])->name('deleteRoom');
