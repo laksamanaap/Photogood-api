@@ -42,9 +42,10 @@ class PaymentController extends Controller
             'Authorization' => "Basic $auth",
         ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params);
 
-        $existingMember = Member::where('user_id', $params['customer_details']['user_id'])->first();
+        // $existingMember = Member::where('user_id', $params['customer_details']['user_id'])->first();
 
         $response = json_decode($response->body());
+        
         $payment = new RiwayatPembayaran();
         $payment->riwayat_id = $params['transaction_details']['order_id'];
         $payment->user_id = $params['customer_details']['user_id'];
@@ -54,34 +55,28 @@ class PaymentController extends Controller
         $payment->checkout_link = $response->redirect_url;
         $payment->save();
 
-        if ($existingMember) {
-            return response()->json(['message' => 'User ini sudah terdaftar menjadi member!'], 401);
-        } else {
-            $member = new Member();
-            $member->user_id = $params['customer_details']['user_id'];
-            $member->save();
+        // if ($existingMember) {
+        //     return response()->json(['message' => 'User ini sudah terdaftar menjadi member!'], 401);
+        // } else {
+        //     $member = new Member();
+        //     $member->user_id = $params['customer_details']['user_id'];
+        //     $member->save();
 
-            // Status 2 (Member)
-            $user = User::find($params['customer_details']['user_id']);
-            if ($user) {
-                $user->status = 2;
-                $user->save();
-            } else {
-                return response()->json(['error' => 'User not found'], 404);
-            }
-        }
+        //     // Status 2 (Member)
+        //     $user = User::find($params['customer_details']['user_id']);
+        //     if ($user) {
+        //         $user->status = 2;
+        //         $user->save();
+        //     } else {
+        //         return response()->json(['error' => 'User not found'], 404);
+        //     }
+        // }
 
         return response()->json([
             'payment_info' => $response,
-            'member_info' => $member,
             'payment' => $payment
+            // 'member_info' => $member,
         ],200);
-    }
-
-    // Update soon
-    public function createQRISPayment(Request $request)
-    {
-
     }
 
     // Get Payment Information

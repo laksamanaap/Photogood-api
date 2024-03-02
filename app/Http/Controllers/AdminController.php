@@ -421,7 +421,9 @@ class AdminController extends Controller
 
     public function getPaymentHistoryPending(Request $request)
     {
-        $payments = RiwayatPembayaran::where('status', 'pending')->get();
+        $payments = RiwayatPembayaran::where('status', 'pending')
+        ->with('user')
+        ->get();
 
         if (!$payments) {
             return response()->json(['message' => 'No payment history status pending found!'], 404);
@@ -433,7 +435,9 @@ class AdminController extends Controller
     
     public function getPaymentHistorySuccess(Request $request)
     {
-        $payments = RiwayatPembayaran::where('status', 'success')->get();
+        $payments = RiwayatPembayaran::where('status', 'success')
+        ->with('user')
+        ->get();
 
         if (!$payments) {
             return response()->json(['message' => 'No payment history status success found!'], 404);
@@ -444,7 +448,36 @@ class AdminController extends Controller
 
     public function acceptPaymentHistory(Request $request)
     {
-        
+        $validator = Validator::make($request->all(), [
+            'riwayat_id' => 'required|string',
+            'user_id' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
+
+        $payment = RiwayatPembayaran::where('riwayat_id', $request->riwayat_id)
+                                    ->where('user_id', $request->user_id)
+                                    ->where('status', 'pending')
+                                    ->first();
+
+        if (!$payment) {
+            return response()->json(['error' => 'Payment not found or already processed'], 404);
+        }
+
+        $payment->status = 'success';
+        $payment->save();
+
+        $user = User::find($request->user_id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $user->status = 2;
+        $user->save();
+
+        return response()->json(['message' => 'Payment accepted successfully and user status updated to member'], 200);
     }
 
 

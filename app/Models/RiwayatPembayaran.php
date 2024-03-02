@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class RiwayatPembayaran extends Model
 {
@@ -12,6 +13,10 @@ class RiwayatPembayaran extends Model
     protected $primaryKey = 'riwayat_id';
     protected $guarded = [];
     public $incrementing = false;
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
 
     use HasFactory;
