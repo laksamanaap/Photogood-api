@@ -42,6 +42,7 @@ Route::post('/auth/member', [AuthController::class, 'addMember'])->name('addMemb
 Route::get('/get-photo/{foto_id}', [PhotoGuestController::class, 'getPhotoDetail'])->name('getPhotoDetail');
 Route::get('/get-photo-image/{foto_id}', [PhotoGuestController::class, 'getPhotoImage'])->name('getPhotoImage');
 
+Route::get('/get-all-image', [PhotoGuestController::class, 'showAllImage'])->name('showAllImage');
 Route::get('/get-all-photo', [PhotoGuestController::class, 'showAllPhoto'])->name('showAllPhoto');
 Route::get('/get-all-gif', [PhotoGuestController::class, 'showAllGIF'])->name('showAllGIF');
 Route::get('/get-all-vector', [PhotoGuestController::class, 'showAllVector'])->name('showAllVector');
@@ -104,12 +105,8 @@ Route::middleware(UserMiddleware::class)->group(
         // Get user download
         Route::get('v1/show-user-download', [DownloadController::class, 'showUserDownload'])->name('showUserDownload');
 
-        // Get user status as member
-        // Route::get('v1/show-user-asMember', [AuthController::class, 'showUserAsMember'])->name('showUserAsMember');
-
         // Discuss - ok
         Route::post('v1/create-room', [RoomDiscussController::class, 'createRoom'])->name('createRoom');
-        // Route::post('v1/store-room-profile', [RoomDiscussController::class, 'storeRoomProfile'])->name('storeRoomProfile');
         Route::post('v1/update-room', [RoomDiscussController::class, 'updateRoom'])->name('updateRoom');
         Route::delete('v1/delete-room', [RoomDiscussController::class, 'deleteRoom'])->name('deleteRoom');
         Route::get('v1/show-all-room', [RoomDiscussController::class, 'showAllRoom'])->name('showAllRoom');
@@ -120,7 +117,6 @@ Route::middleware(UserMiddleware::class)->group(
         Route::post('v1/update-message', [MessageDiscussController::class, 'updateMessages'])->name('updateMessages');
         Route::delete('v1/delete-message', [MessageDiscussController::class, 'deleteMessages'])->name('deleteMessages');
 
-        
         // Join Room - ok
         Route::post('v1/join-room', [RoomDiscussController::class, 'joinRoom'])->name('joinRoom');
         Route::post('v1/leave-room', [RoomDiscussController::class, 'leaveRoom'])->name('leaveRoom');
@@ -157,6 +153,8 @@ Route::middleware(MemberMiddleware::class)->group(
 
         // Mobile
         Route::post('v4/download-photo/{foto_id}', [DownloadController::class, 'mobileMemberDownloadPhoto'])->name('mobileMemberDownloadPhoto');
+
+
     }
 );
 
@@ -172,6 +170,7 @@ Route::middleware(AdminMiddleware::class)->group(
         Route::get('v3/get-current-user-registered', [AdminController::class, 'getCurrentUserRegistered'])->name('getCurrentUserRegistered');
         
         // Midtrans acc payment
+        
 
         // Pagination (Optional)
         

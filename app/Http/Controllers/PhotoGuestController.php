@@ -276,6 +276,19 @@ class PhotoGuestController extends Controller
 
     }
 
+    public function showAllImage(Request $request)
+    {
+        $images = Foto::all();
+
+        $appUrl = env('APP_URL');
+        foreach ($images as $image) {
+            if (!empty($image->lokasi_file) && !Str::startsWith($image->lokasi_file, env('APP_URL'))) {
+                $image->lokasi_file = env('APP_URL') . '/' . $image->lokasi_file;
+            }
+        }
+
+        return response()->json($images,200);
+    }
 
 
 }
