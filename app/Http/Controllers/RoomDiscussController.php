@@ -36,7 +36,19 @@ class RoomDiscussController extends Controller
             'profil_ruang' => "storage/" . $imagePath,
         ]);
 
-        return response()->json($room,200);
+        // User who created this room, automatic be member of this room
+        $room = RuangDiskusi::where('ruang_id', $room->ruang_id)->first();
+        $existingMember = AnggotaDiskusi::where('ruang_id', $room->ruang_id)->where('user_id', $room->user_id)->first();
+
+        $member = new AnggotaDiskusi();
+        $member->ruang_id = $room->ruang_id;
+        $member->user_id = $room->user_id;
+        $member->save();
+
+        return response()->json([
+            'room' => $room,
+            'member' => $member
+        ],200);
     }
 
     public function updateRoom(Request $request)
@@ -174,7 +186,7 @@ class RoomDiscussController extends Controller
         $existingMember = AnggotaDiskusi::where('ruang_id', $ruang_id)->where('user_id', $user_id)->first();
 
         if ($existingMember) {
-            return response()->json(['message' => 'User already joined this room.'], 400);
+            return response()->json(['message' => 'User already joined this room.'], 401);
         }
 
         $member = new AnggotaDiskusi();
