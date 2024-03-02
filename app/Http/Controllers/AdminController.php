@@ -335,7 +335,14 @@ class AdminController extends Controller
             });
         }
 
-        $result = $rooms->get();
+        $result = $rooms->with(['lastMessage.user', 'owner'])->get();
+
+        $appUrl = env('APP_URL');
+        foreach ($result as $room) {
+            if (!Str::startsWith($room->profil_ruang, $appUrl)) {
+                $room->profil_ruang = $appUrl . '/' . $room->profil_ruang;
+            }
+        }
 
         if ($result->isNotEmpty()) {
             return response()->json($result, 200);

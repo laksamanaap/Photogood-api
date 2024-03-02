@@ -50,6 +50,7 @@ Route::get('/get-all-vector', [PhotoGuestController::class, 'showAllVector'])->n
 Route::get('search-photo', [SearchController::class, 'searchPhoto'])->name('searchPhoto');
 Route::get('search-album', [SearchController::class, 'searchAlbum'])->name('searchAlbum');
 Route::get('search-history', [SearchController::class, 'searchHistory'])->name('searchHistory');
+Route::get('search-room-discuss', [AdminController::class, 'searchRoomDiscuss'])->name('searchRoomDiscuss');
 
 
 Route::middleware(UserMiddleware::class)->group(
@@ -58,6 +59,7 @@ Route::middleware(UserMiddleware::class)->group(
         // Download Photo Routes
         // v1 - v2 : Website
         // v3 - v4 : Mobile
+
 
         // Download Photo - ok
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
