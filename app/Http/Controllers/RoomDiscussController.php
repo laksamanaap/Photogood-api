@@ -43,8 +43,9 @@ class RoomDiscussController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'ruang_id' => 'required|string', 
-            'nama_ruang' => 'required|string',
-            'deskripsi_ruang' => 'required|string',
+            'nama_ruang' => 'string',
+            'deskripsi_ruang' => 'string',
+            'profil_ruang' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         if ($validator->fails()) {
@@ -55,13 +56,17 @@ class RoomDiscussController extends Controller
 
         $room = RuangDiskusi::where('ruang_id', $ruang_id)->first();
 
+        $uploadFolders = 'foto_profil_room';
+        $image = $request->file('profil_ruang');
+        $imagePath = $image->store($uploadFolders, 'public');
+
         if (!$room) {
             return response()->json(['message' => 'Room not found!'], 404);
         }
 
-        $room->nama_ruang = $request->input('nama_ruang');
-        $room->deskripsi_ruang = $request->input('deskripsi_ruang');
-        $room->profil_ruang = $request->input('profil_ruang');
+        $room->nama_ruang = $request->filled('nama_ruang') ? $request->input('nama_ruang') : $room->nama_ruang;
+        $room->deskripsi_ruang = $request->filled('deskripsi_ruang') ? $request->input('deskripsi_ruang') : $room->deskripsi_ruang;
+        $room->profil_ruang = "storage/" . $imagePath;
         $room->save();
 
         return response()->json($room, 200);

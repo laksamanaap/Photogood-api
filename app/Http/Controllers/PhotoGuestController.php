@@ -278,7 +278,8 @@ class PhotoGuestController extends Controller
 
     public function showAllImage(Request $request)
     {
-        $images = Foto::all();
+        $images = Foto::with('user', 'member.user','comment.user','download','like', 'kategori')
+        ->get();
 
         $appUrl = env('APP_URL');
         foreach ($images as $image) {

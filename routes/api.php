@@ -62,7 +62,7 @@ Route::middleware(UserMiddleware::class)->group(
         // Download Photo - ok
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
 
-        // Subscribe - (Midtrans) - need improve from admin
+        // Subscribe - (Midtrans) - ok
         Route::post('v1/store-midtrans-payment', [PaymentController::class, 'createMidtransPayment'])->name('createMidtransPayment');
         Route::post('v1/store-qris-payment', [PaymentController::class, 'createQRISPayment'])->name('createQRISPayment');
         
