@@ -408,6 +408,46 @@ class AdminController extends Controller
 
     // Midtrans acc payment
 
+    public function getAllPaymentHistory(Request $request)
+    {
+        $payments = RiwayatPembayaran::all();
+
+        if (!$payments) {
+            return response()->json(['message' => 'No payment history found!'], 404);
+        }
+
+        return response()->json($payments, 200);
+    }
+
+    public function getPaymentHistoryPending(Request $request)
+    {
+        $payments = RiwayatPembayaran::where('status', 'pending')->get();
+
+        if (!$payments) {
+            return response()->json(['message' => 'No payment history status pending found!'], 404);
+        }
+
+        return response()->json($payments, 200);
+    }
+
+    
+    public function getPaymentHistorySuccess(Request $request)
+    {
+        $payments = RiwayatPembayaran::where('status', 'success')->get();
+
+        if (!$payments) {
+            return response()->json(['message' => 'No payment history status success found!'], 404);
+        }
+
+        return response()->json($payments, 200);
+    }
+
+    public function acceptPaymentHistory(Request $request)
+    {
+        
+    }
+
+
     // Pagination
 
 }

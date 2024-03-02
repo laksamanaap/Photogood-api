@@ -170,7 +170,9 @@ Route::middleware(AdminMiddleware::class)->group(
         Route::get('v3/get-current-user-registered', [AdminController::class, 'getCurrentUserRegistered'])->name('getCurrentUserRegistered');
         
         // Midtrans acc payment
-        
+        Route::get('v3/get-payment-history-pending', [AdminController::class, 'getPaymentHistoryPending'])->name('getPaymentHistoryPending');
+        Route::get('v3/get-payment-history-success', [AdminController::class, 'getPaymentHistorySuccess'])->name('getPaymentHistorySuccess');
+        Route::get('v3/accept-payment-history', [AdminController::class, 'acceptPaymentHistory'])->name('acceptPaymentHistory');
 
         // Pagination (Optional)
         
