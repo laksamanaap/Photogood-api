@@ -84,7 +84,7 @@ Route::middleware(UserMiddleware::class)->group(
         // Like - ok
         Route::get('v1/show-photo-like/{foto_id}', [LikeController::class, 'showPhotoLike'])->name('showPhotoLike');
         Route::post('v1/store-guest-like', [LikeController::class, 'guestStoreLike'])->name('guestStoreLike');
-        Route::delete('v1/delete-guest-like', [LikeController::class, 'guestDeleteLike'])->name('guestDeleteLike');
+        Route::post('v1/delete-guest-like', [LikeController::class, 'guestDeleteLike'])->name('guestDeleteLike');
 
         // Comment - ok
         Route::get('v1/show-photo-comment/{foto_id}', [CommentController::class, 'showComment'])->name('showComment');

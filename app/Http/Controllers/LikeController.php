@@ -35,22 +35,33 @@ class LikeController extends Controller
     public function guestDeleteLike(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'like_id' => 'required|string'
+            'foto_id' => 'required|string'
         ]);
 
         if ($validator->fails()) {
-            return response()->json([$validator->errors()],422);
+            return response()->json([$validator->errors()], 422);
         }
 
-        $likeID = $request->input('like_id');
+        $fotoID = $request->input('foto_id');
 
-        $like = Like::destroy($likeID);
+        $foto = Foto::with('like')->find($fotoID);
 
-        if (!$like) {
-            return response()->json(['message' => "Cannot find like id $likeID"]);
+        if (!$foto) {
+            return response()->json(['message' => 'Photo not found'], 404);
         }
 
-        return response()->json(['message' => "Succesfully delete like id $likeID"]);
+        $latestLike = $foto->like->last();
+
+        if (!$latestLike) {
+            return response()->json(['message' => 'No likes found for this photo'], 404);
+        }
+
+        try {
+            $latestLike->delete();
+            return response()->json(['message' => "Successfully deleted the last like for photo with id $fotoID"]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete like'], 500);
+        }
     }
 
     public function showPhotoLike(Request $request, $fotoID)
@@ -61,9 +72,11 @@ class LikeController extends Controller
             return response()->json(['message' => 'Photo not found']);
         }
 
-        return response($foto,200);
-
+        return response()->json([
+            'likes_count' => $foto->like->count()
+        ], 200);
     }
+
 
    public function showUserLike(Request $request)
     {
