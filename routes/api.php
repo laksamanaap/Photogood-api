@@ -113,6 +113,8 @@ Route::middleware(UserMiddleware::class)->group(
         Route::delete('v1/delete-room', [RoomDiscussController::class, 'deleteRoom'])->name('deleteRoom');
         Route::get('v1/show-all-room', [RoomDiscussController::class, 'showAllRoom'])->name('showAllRoom');
         Route::get('v1/show-room-messages', [RoomDiscussController::class, 'showAllRoomMessages'])->name('showAllRoomMessages');
+        Route::post('v1/store-photo-room', [RoomDiscussController::class, 'storeRoomPhoto'])->name('storeRoomPhoto');
+        
 
         // Discuss Messages - ok
         Route::post('v1/store-message', [MessageDiscussController::class, 'storeMessages'])->name('storeMessages');
@@ -185,6 +187,8 @@ Route::middleware(AdminMiddleware::class)->group(
         // Need Improve
         Route::post('v3/update-room', [AdminController::class, 'updateRoom'])->name('updateRoom');
         Route::delete('v3/delete-room', [AdminController::class, 'deleteRoom'])->name('deleteRoom');
+        Route::post('v3/store-photo-room', [RoomDiscussController::class, 'storeRoomPhoto'])->name('storeRoomPhoto');
+
 
         // Manage User
         Route::get('v3/get-all-user', [AdminController::class, 'getAllUser'])->name('getAllUser');

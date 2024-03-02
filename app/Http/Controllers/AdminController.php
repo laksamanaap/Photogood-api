@@ -218,14 +218,14 @@ class AdminController extends Controller
         return response()->json($room,200);
     }
 
-    public function updateRoom(Request $request) 
+     public function updateRoom(Request $request)
     {
-          $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'ruang_id' => 'required|string', 
             'nama_ruang' => 'string',
             'deskripsi_ruang' => 'string',
-            'profil_ruang' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
-        ]);
+            // 'profil_ruang' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]); 
 
         if ($validator->fails()) {
             return response()->json([$validator->errors()], 422);
@@ -235,9 +235,9 @@ class AdminController extends Controller
 
         $room = RuangDiskusi::where('ruang_id', $ruang_id)->first();
 
-        $uploadFolders = 'foto_profil_room';
-        $image = $request->file('profil_ruang');
-        $imagePath = $image->store($uploadFolders, 'public');
+        // $uploadFolders = 'foto_profil_room';
+        // $image = $request->file('profil_ruang');
+        // $imagePath = $image->store($uploadFolders, 'public');
 
         if (!$room) {
             return response()->json(['message' => 'Room not found!'], 404);
@@ -245,11 +245,42 @@ class AdminController extends Controller
 
         $room->nama_ruang = $request->filled('nama_ruang') ? $request->input('nama_ruang') : $room->nama_ruang;
         $room->deskripsi_ruang = $request->filled('deskripsi_ruang') ? $request->input('deskripsi_ruang') : $room->deskripsi_ruang;
-        $room->profil_ruang = "storage/" . $imagePath;
+        // $room->profil_ruang = "storage/" . $imagePath;
         $room->save();
 
         return response()->json($room, 200);
     }
+
+     public function storeRoomPhoto(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'ruang_id' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()], 422);
+        }
+
+        $uploadFolder = 'foto_profil_room';
+        $image = $request->file('images');
+        $imagePath = $image->store($uploadFolder, 'public');
+
+        $roomID = $request->input('ruang_id');
+        $room = RuangDiskusi::find($roomID);
+        if (!$room) {
+            return response()->json(['message' => 'Room not found'], 404);
+        }
+
+        $room->profil_ruang = "storage/" . $imagePath;
+        $room->save();
+
+        return response()->json([
+            'message' => 'Image uploaded successfully',
+            'data' => $room
+        ]);
+    }
+
 
     public function deleteRoom(Request $request)
     {
