@@ -59,8 +59,6 @@ Route::middleware(UserMiddleware::class)->group(
         // Download Photo Routes
         // v1 - v2 : Website
         // v3 - v4 : Mobile
-
-
         // Download Photo - ok
         Route::post('v1/download-photo/{foto_id}', [DownloadController::class, 'guestDownloadPhoto'])->name('guestDownloadPhoto');
 
