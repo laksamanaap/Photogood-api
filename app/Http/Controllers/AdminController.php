@@ -476,8 +476,8 @@ class AdminController extends Controller
    public function getCurrentUserRegistered(Request $request)
     {
         $currentUsers = User::latest()->take(8)
-        // ->where('status',1)
-        // ->orWhere('status',2)
+        ->where('status',1)
+        ->orWhere('status',2)
         ->get();
 
         $appUrl = env('APP_URL');
