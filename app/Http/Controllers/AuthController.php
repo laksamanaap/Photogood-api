@@ -126,22 +126,31 @@ public function loginUsers(Request $request)
         return response()->json([$validator->errors()], 422);
     }
 
+    $user = User::where('username', $request->input('username'))->first();
+
+    if (!$user) {
+        return response()->json(['message' => 'Coba cek username dan password anda kembali!'], 401);
+    }
+
+    if ($user->status == 0) {
+        return response()->json(['message' => 'Akun anda telah disuspend, coba hubungi admin terkait masalah ini!'], 403);
+    }
+
     if ($token = auth()->attempt([
         'username' => $request->input('username'),
         'password' => $request->input('password')
     ])) {
-        $user = auth()->user();
+        $authenticatedUser = auth()->user();
         
-        $loginToken = Hash::make($user->username);
-        $user->update(['login_tokens' => $loginToken]);
-        $userWithMember = User::with('member')->find($user->user_id);
+        $loginToken = Hash::make($authenticatedUser->username);
+        $authenticatedUser->update(['login_tokens' => $loginToken]);
+        $userWithMember = User::with('member')->find($authenticatedUser->user_id);
 
-        return response()->json($userWithMember,200);
+        return response()->json($userWithMember, 200);
     } else {
         return response()->json(['message' => 'Try to check your username or password!'], 401);
     }
 }
-
 
     /**
  * @OA\Post(

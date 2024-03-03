@@ -15,27 +15,63 @@ use Illuminate\Support\Facades\Validator;
 class AdminController extends Controller
 {
     public function getAllUser(Request $request)
-    {
+{
 
-        // User Status
-        // 0 = Suspended
-        // 1 = Common User
-        // 2 = Membership
-        // 3 = Admin
+    // User Status
+    // 0 = Suspended
+    // 1 = Common User
+    // 2 = Membership
+    // 3 = Admin
 
-        $user = User::where('status', 1)->get();
+    $users = User::where('status', 0)
+                  ->orWhere('status', 1)
+                  ->get();
 
-        if (!$user) {
-            return response()->json(['message' => 'No user found!']);
-        }
-
-        return response()->json($user,200);
-
+    if ($users->isEmpty()) {
+        return response()->json(['message' => 'No user found!']);
     }
+
+    return response()->json($users, 200);
+
+}
 
     // Photo Status
     // 0 : Deactive
     // 1 : Active
+
+    public function showAllImageNonActive(Request $request)
+    {
+        $images = Foto::with('user', 'member.user','comment.user','download','like', 'kategori')
+        ->where('status',0)
+        ->get();
+
+        $appUrl = env('APP_URL');
+        foreach ($images as $image) {
+            if (!empty($image->lokasi_file) && !Str::startsWith($image->lokasi_file, env('APP_URL'))) {
+                $image->lokasi_file = env('APP_URL') . '/' . $image->lokasi_file;
+            }
+        }
+
+        return response()->json($images,200);
+    }
+
+    public function showAllImageActive(Request $request)
+    {
+        $images = Foto::with('user', 'member.user','comment.user','download','like', 'kategori')
+        ->where('status',1)
+        ->get();
+
+        $appUrl = env('APP_URL');
+        foreach ($images as $image) {
+            if (!empty($image->lokasi_file) && !Str::startsWith($image->lokasi_file, env('APP_URL'))) {
+                $image->lokasi_file = env('APP_URL') . '/' . $image->lokasi_file;
+            }
+        }
+
+        return response()->json($images,200);
+    }
+
+
    public function changePhotoActive(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -130,7 +166,9 @@ class AdminController extends Controller
     public function getAllMember(Request $request)
     {
 
-        $member = User::where('status', 2)->get();
+        $member = User::where('status', 2)
+        ->orWhere('status', 0)
+        ->get();
         if (!$member) {
             return response()->json(['message' => 'No user found!']);
         }
@@ -407,33 +445,33 @@ class AdminController extends Controller
 
     // Get Weekly Overview
     public function getWeeklyOverview(Request $request)
-    {
-        $weekStart = Carbon::now()->startOfWeek(); 
-        $weekEnd = Carbon::now()->endOfWeek(); 
+{
+    $weekStart = Carbon::now()->startOfWeek(); 
+    $weekEnd = Carbon::now()->endOfWeek(); 
 
-        $weeklyPayments = RiwayatPembayaran::whereBetween('created_at', [$weekStart, $weekEnd])->get();
-        $totalWeeklyPayments = $weeklyPayments->count() * 30000;
-        $totalWeeklyPercents = (RiwayatPembayaran::all()->count() / 7) * 100;
+    $weeklyPayments = RiwayatPembayaran::whereBetween('created_at', [$weekStart, $weekEnd])->get();
+    $totalWeeklyPayments = $weeklyPayments->count();
+    $totalWeeklyPercents = (RiwayatPembayaran::all()->count() / 7) * 100;
 
-        $dailyPayments = [];
-        $currentDay = clone $weekStart;
+    $dailyPayments = [];
+    $currentDay = clone $weekStart;
 
-        while ($currentDay <= $weekEnd) {
-            $dailyPayments[$currentDay->format('l')] = 0;
-            $currentDay->addDay(); 
-        }
-
-        foreach ($weeklyPayments as $payment) {
-            $day = Carbon::parse($payment->created_at)->format('l');
-            $dailyPayments[$day] += 30000; 
-        }
-
-        return response()->json([
-            'weekly_payments' => $dailyPayments,
-            'total_weekly_payments' => $totalWeeklyPayments,
-            'total_weekly_percents' => round($totalWeeklyPercents)
-        ]);
+    while ($currentDay <= $weekEnd) {
+        $dailyPayments[$currentDay->format('l')] = 0;
+        $currentDay->addDay(); 
     }
+
+    foreach ($weeklyPayments as $payment) {
+        $day = Carbon::parse($payment->created_at)->format('l');
+        $dailyPayments[$day] += 1; // Jumlah pembayaran per hari
+    }
+
+    return response()->json([
+        'weekly_payments' => $dailyPayments,
+        'total_weekly_payments' => $totalWeeklyPayments,
+        'total_weekly_percents' => round($totalWeeklyPercents)
+    ]);
+}
 
    public function getCurrentUserRegistered(Request $request)
     {
