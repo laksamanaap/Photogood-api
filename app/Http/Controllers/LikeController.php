@@ -86,6 +86,9 @@ class LikeController extends Controller
 
         $like = Like::where('user_id', $userID)
             ->with('foto')
+            ->whereHas('foto', function ($query) {
+                            $query->where('status', 1);
+                        })
             ->get();
 
         if (!$like) {

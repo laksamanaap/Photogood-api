@@ -91,9 +91,12 @@ class BookmarkController extends Controller
 
         $userID = $user->user_id;
 
-        $bookmarks = Bookmark::with('foto')
-                            ->where('user_id', $userID)
-                            ->get();
+          $bookmarks = Bookmark::with('foto')
+                        ->where('user_id', $userID)
+                        ->whereHas('foto', function ($query) {
+                            $query->where('status', 1);
+                        })
+                        ->get();
 
         if ($bookmarks->isEmpty()) {
             return response()->json(['message' => "The user hasn't saved anything yet!"], 404);

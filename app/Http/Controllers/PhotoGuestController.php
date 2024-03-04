@@ -243,7 +243,9 @@ class PhotoGuestController extends Controller
         $user = User::where('login_tokens',$loginToken)->first();
         $userID = $user->user_id;
 
-        $userPhoto = Foto::where("user_id", $userID)->get();
+       $userPhoto = Foto::where("user_id", $userID)
+        ->where("status", 1)
+        ->get();
 
         if ($userPhoto->isEmpty()) {
             return response()->json(['message' => "The user hasn't posted anything yet!"], 404);
@@ -279,6 +281,7 @@ class PhotoGuestController extends Controller
     public function showAllImage(Request $request)
     {
         $images = Foto::with('user', 'member.user','comment.user','download','like', 'kategori')
+        ->where('status', 1)
         ->get();
 
         $appUrl = env('APP_URL');

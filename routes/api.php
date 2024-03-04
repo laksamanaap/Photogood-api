@@ -143,7 +143,7 @@ Route::middleware(MemberMiddleware::class)->group(
         Route::get('v2/show-bookmark/{bookmark_id}', [BookmarkController::class, 'showBookmark'])->name('showBookmark');
         Route::get('v2/show-all-bookmark', [BookmarkController::class, 'showAllBookmark'])->name('showAllBookmark');
         Route::post('v2/store-bookmark', [BookmarkController::class, 'storeBookmark'])->name('storeBookmark');
-        Route::delete('v2/delete-bookmark', [BookmarkController::class, 'deleteBookmark'])->name('deleteBookmark');
+        Route::post('v2/delete-bookmark', [BookmarkController::class, 'deleteBookmark'])->name('deleteBookmark');
         
         // Photos - ok
         Route::post('v2/store-member-photo', [PhotoMemberController::class, 'memberStorePhoto'])->name('memberStorePhoto');

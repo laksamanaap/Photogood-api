@@ -557,9 +557,13 @@ class AdminController extends Controller
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
-
         $user->status = 2;
         $user->save();
+
+        // Create member
+        $member = new Member();
+        $member->user_id = $request->user_id;
+        $member->save();
 
         return response()->json(['message' => 'Payment accepted successfully and user status updated to member'], 200);
     }

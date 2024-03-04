@@ -42,7 +42,7 @@ class PaymentController extends Controller
             'Authorization' => "Basic $auth",
         ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params);
 
-        // $existingMember = Member::where('user_id', $params['customer_details']['user_id'])->first();
+        $existingMember = Member::where('user_id', $params['customer_details']['user_id'])->first();
 
         $response = json_decode($response->body());
         
@@ -54,6 +54,10 @@ class PaymentController extends Controller
         $payment->payment_gateway = 'midtrans';
         $payment->checkout_link = $response->redirect_url;
         $payment->save();
+
+        if ($existingMember) {
+            return response()->json(['message' => 'User ini sudah terdaftar menjadi member!'], 401);
+        } 
 
         // if ($existingMember) {
         //     return response()->json(['message' => 'User ini sudah terdaftar menjadi member!'], 401);
