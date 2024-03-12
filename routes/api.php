@@ -162,49 +162,49 @@ Route::middleware(MemberMiddleware::class)->group(
 
 Route::middleware(AdminMiddleware::class)->group(
     function(){  
+        // Temporary
+        // Ok
+        Route::get('v3/show-all-image-pending', [AdminController::class, 'showAllImageNonActive'])->name('showAllImageNonActive');
+        Route::get('v3/show-all-image-active', [AdminController::class, 'showAllImageActive'])->name('showAllImageActive');
+        Route::post('v3/update-photo-active', [AdminController::class, 'changePhotoActive'])->name('changePhotoActive');
+        Route::post('v3/update-photo-deactive', [AdminController::class, 'changePhotoDeactive'])->name('changePhotoDeactive');
+        
+        // Dashboard - (Add income detail)
+        Route::get('v3/get-all-statistic', [AdminController::class, 'getAllStatistic'])->name('getAllStatistic');
+        Route::get('v3/get-weekly-overview', [AdminController::class, 'getWeeklyOverview'])->name('getWeeklyOverview');
+        Route::get('v3/get-current-user-registered', [AdminController::class, 'getCurrentUserRegistered'])->name('getCurrentUserRegistered');
+        
+        // Midtrans acc payment
+        Route::get('v3/get-payment-history-pending', [AdminController::class, 'getPaymentHistoryPending'])->name('getPaymentHistoryPending');
+        Route::get('v3/get-payment-history-success', [AdminController::class, 'getPaymentHistorySuccess'])->name('getPaymentHistorySuccess');
+        Route::post('v3/accept-payment-history', [AdminController::class, 'acceptPaymentHistory'])->name('acceptPaymentHistory');
+        
+        // Pagination (Optional)
+        
+        // Manage Room Discuss
+        Route::get('v3/show-all-room', [AdminController::class, 'showAllRoom'])->name('showAllRoom');
+        Route::post('v3/delete-room', [AdminController::class, 'deleteRoom'])->name('deleteRoom');
+        
+        // Need Improve
+        // Route::post('v3/create-room', [AdminController::class, 'createRoom'])->name('createRoom');
+        // Route::post('v3/update-room', [AdminController::class, 'updateRoom'])->name('updateRoom');
+        // Route::post('v3/store-photo-room', [RoomDiscussController::class, 'storeRoomPhoto'])->name('storeRoomPhoto');
+        
+        // Manage User
+        Route::get('v3/get-all-user', [AdminController::class, 'getAllUser'])->name('getAllUser');
+        Route::get('v3/show-user-detail/{user_id}', [AdminController::class, 'showUserDetail'])->name('showUserDetail');
+        Route::post('v3/suspend-user/{user_id}', [AdminController::class, 'suspendUser'])->name('suspendUser');
+        Route::post('v3/activate-user/{user_id}', [AdminController::class, 'activateUser'])->name('activateUser');
+        
+        // Manage Member
+        Route::get('v3/get-all-member', [AdminController::class, 'getAllMember'])->name('getAllMember');
+        Route::get('v3/show-member-detail/{user_id}', [AdminController::class, 'showMemberDetail'])->name('showMemberDetail');
+        Route::post('v3/activate-member/{user_id}', [AdminController::class, 'activateMember'])->name('activateMember');
+        
+        // Search
+        Route::get('v3/search-room-discuss', [AdminController::class, 'searchRoomDiscuss'])->name('searchRoomDiscuss');
+        Route::get('v3/search-user', [AdminController::class, 'searchUser'])->name('searchUser');
+        Route::get('v3/search-member', [AdminController::class, 'searchMember'])->name('searchMember');
     }
 );
 
-// Temporary
-// Ok
-Route::get('v3/show-all-image-pending', [AdminController::class, 'showAllImageNonActive'])->name('showAllImageNonActive');
-Route::get('v3/show-all-image-active', [AdminController::class, 'showAllImageActive'])->name('showAllImageActive');
-Route::post('v3/update-photo-active', [AdminController::class, 'changePhotoActive'])->name('changePhotoActive');
-Route::post('v3/update-photo-deactive', [AdminController::class, 'changePhotoDeactive'])->name('changePhotoDeactive');
-
-// Dashboard - (Add income detail)
-Route::get('v3/get-all-statistic', [AdminController::class, 'getAllStatistic'])->name('getAllStatistic');
-Route::get('v3/get-weekly-overview', [AdminController::class, 'getWeeklyOverview'])->name('getWeeklyOverview');
-Route::get('v3/get-current-user-registered', [AdminController::class, 'getCurrentUserRegistered'])->name('getCurrentUserRegistered');
-
-// Midtrans acc payment
-Route::get('v3/get-payment-history-pending', [AdminController::class, 'getPaymentHistoryPending'])->name('getPaymentHistoryPending');
-Route::get('v3/get-payment-history-success', [AdminController::class, 'getPaymentHistorySuccess'])->name('getPaymentHistorySuccess');
-Route::post('v3/accept-payment-history', [AdminController::class, 'acceptPaymentHistory'])->name('acceptPaymentHistory');
-
-// Pagination (Optional)
-
-// Manage Room Discuss
-Route::get('v3/show-all-room', [AdminController::class, 'showAllRoom'])->name('showAllRoom');
-Route::post('v3/delete-room', [AdminController::class, 'deleteRoom'])->name('deleteRoom');
-
-// Need Improve
-// Route::post('v3/create-room', [AdminController::class, 'createRoom'])->name('createRoom');
-// Route::post('v3/update-room', [AdminController::class, 'updateRoom'])->name('updateRoom');
-// Route::post('v3/store-photo-room', [RoomDiscussController::class, 'storeRoomPhoto'])->name('storeRoomPhoto');
-
-// Manage User
-Route::get('v3/get-all-user', [AdminController::class, 'getAllUser'])->name('getAllUser');
-Route::get('v3/show-user-detail/{user_id}', [AdminController::class, 'showUserDetail'])->name('showUserDetail');
-Route::post('v3/suspend-user/{user_id}', [AdminController::class, 'suspendUser'])->name('suspendUser');
-Route::post('v3/activate-user/{user_id}', [AdminController::class, 'activateUser'])->name('activateUser');
-
-// Manage Member
-Route::get('v3/get-all-member', [AdminController::class, 'getAllMember'])->name('getAllMember');
-Route::get('v3/show-member-detail/{user_id}', [AdminController::class, 'showMemberDetail'])->name('showMemberDetail');
-Route::post('v3/activate-member/{user_id}', [AdminController::class, 'activateMember'])->name('activateMember');
-
-// Search
-Route::get('v3/search-room-discuss', [AdminController::class, 'searchRoomDiscuss'])->name('searchRoomDiscuss');
-Route::get('v3/search-user', [AdminController::class, 'searchUser'])->name('searchUser');
-Route::get('v3/search-member', [AdminController::class, 'searchMember'])->name('searchMember');
